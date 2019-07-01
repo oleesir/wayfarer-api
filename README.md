@@ -1,1 +1,3 @@
+[![Build Status](https://travis-ci.org/oleesir/wayfarer-api.svg?branch=develop)](https://travis-ci.org/oleesir/wayfarer-api)
+[![Maintainability](https://api.codeclimate.com/v1/badges/1a045a31f842d8f92b00/maintainability)](https://codeclimate.com/github/oleesir/wayfarer-api/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/1a045a31f842d8f92b00/test_coverage)](https://codeclimate.com/github/oleesir/wayfarer-api/test_coverage) [![codecov](https://codecov.io/gh/oleesir/wayfarer-api/branch/develop/graph/badge.svg)](https://codecov.io/gh/oleesir/wayfarer-api)
 # wayfarer-api
