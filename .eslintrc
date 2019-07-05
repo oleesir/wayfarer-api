@@ -58,6 +58,16 @@
       { 
         "allowForLoopAfterthoughts": true 
       }
-    ]
-  }
+    ],
+    "no-underscore-dangle" : 
+    ["error", 
+      { 
+        "allowAfterThis": true 
+      }
+    ],
+    "class-methods-use-this": 0,
+    "no-restricted-syntax": 0
+
+  },
+  "parser": "babel-eslint"
 }
