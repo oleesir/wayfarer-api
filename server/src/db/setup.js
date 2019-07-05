@@ -17,10 +17,9 @@ const setupDB = async () => {
     `;
 
     await connectString.query(query);
-    console.log('Database setup successfully');
+
     connectString.end();
   } catch (err) {
-    console.log(err);
     await connectString.end();
   }
 };

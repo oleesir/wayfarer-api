@@ -3,9 +3,9 @@ import bcrypt from 'bcrypt';
 
 dotenv.config();
 
-const { ADMIN_PASS, USER_PASS } = process.env;
-const adminPassword = bcrypt.hashSync(ADMIN_PASS, 10);
-const userPassword = bcrypt.hashSync(USER_PASS, 10);
+const { ADMIN_PASSWORD, USER_PASSWORD } = process.env;
+const adminPassword = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+const userPassword = bcrypt.hashSync(USER_PASSWORD, 10);
 
 export default `
   INSERT INTO users (firstname, lastname, email ,password, is_admin)
