@@ -1,2 +1,2 @@
-// import './app.test';
+import './app.test';
 import './auth.test';
