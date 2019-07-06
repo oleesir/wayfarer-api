@@ -62,4 +62,58 @@ export default class AuthController {
       message: 'User registered successfully'
     });
   }
+
+  /**
+   * @method signin
+   *
+   * @param {object} req request
+   * @param {object} res response
+   *
+   * @returns {object}  status code, data and message properties
+   */
+  static async signin(req, res) {
+    const { password, email } = req.body;
+    console.log(req.body);
+    const findUser = await users.select(['*'], `email='${email}'`);
+    console.log(findUser);
+    if (findUser.length > 0) {
+      const verifyUserPassword = bcrypt.compareSync(password, findUser[0].password);
+
+      if (!verifyUserPassword) {
+        return res.status(401).json({
+          status: 401,
+          error: 'Email or password is incorrect'
+
+        });
+      }
+
+      const payload = {
+        id: findUser[0].id,
+        firstname: findUser[0].firstname,
+        lastname: findUser[0].lastname,
+        email: findUser[0].email,
+        isAdmin: findUser[0].isAdmin
+      };
+
+      const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1day' });
+
+      const data = {
+        id: findUser[0].id,
+        firstname: findUser[0].firstname,
+        lastname: findUser[0].lastname,
+        email: findUser[0].email,
+        isAdmin: findUser[0].isAdmin,
+        token
+      };
+      return res.status(200).json({
+        status: 'success',
+        data,
+        message: 'Login successful'
+      });
+    }
+    return res.status(401).json({
+      status: 401,
+      error: 'Email or password is incorrect'
+    });
+  }
 }
