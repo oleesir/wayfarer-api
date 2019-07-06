@@ -9,6 +9,12 @@ export const signupSchema = Joi.object().keys({
   password: Joi.string().min(8).required()
 });
 
+export const signinSchema = Joi.object().keys({
+  email: Joi.string().email({ minDomainSegments: 2 }).required(),
+  password: Joi.string().min(8).required()
+});
+
 export default{
-  signupSchema
+  signupSchema,
+  signinSchema
 };

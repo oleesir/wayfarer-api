@@ -13,7 +13,14 @@ import {
   invalidEmail,
   emptyPassword,
   invalidPasswordLength,
-  existingEmail
+  existingEmail,
+  authUser,
+  emptyAuthUser,
+  emptyEmailAuthUser,
+  emptyPasswordAuthUser,
+  wrongUserAuth,
+  wrongUserAuthEmail,
+  wrongEmailAuthUser
 } from './helpers/fixtures';
 
 const URL = '/api/v1/auth';
@@ -168,6 +175,109 @@ describe('Auth Routes', () => {
           expect(res.status).to.equal(409);
           expect(res.body).to.have.property('status').equal(409);
           expect(res.body).to.have.property('error').equal('User already exists');
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
+
+  describe('Sigin Route', () => {
+    it('should log in an existing user ', (done) => {
+      request(app)
+        .post(`${URL}/signin`)
+        .send(authUser)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body).to.have.property('message').equal('Login successful');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not log in a user with empty email and password fields', (done) => {
+      request(app)
+        .post(`${URL}/signin`)
+        .send(emptyAuthUser)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body.error.email[0]).to.equal('"email" is not allowed to be empty');
+          expect(res.body.error.password[0]).to.equal('"password" is not allowed to be empty');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
+    it('should not log in a user with empty email field', (done) => {
+      request(app)
+        .post(`${URL}/signin`)
+        .send(emptyEmailAuthUser)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body.error.email[0]).to.equal('"email" is not allowed to be empty');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
+    it('should not log in a user with empty password field', (done) => {
+      request(app)
+        .post(`${URL}/signin`)
+        .send(emptyPasswordAuthUser)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body.error.password[0]).to.equal('"password" is not allowed to be empty');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not log in a user with wrong details', (done) => {
+      request(app)
+        .post(`${URL}/signin`)
+        .send(wrongUserAuth)
+        .expect(401)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          expect(res.body).to.have.property('status').equal(401);
+          expect(res.body).to.have.property('error').equal('Email or password is incorrect');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not log in a user with wrong details', (done) => {
+      request(app)
+        .post(`${URL}/signin`)
+        .send(wrongUserAuthEmail)
+        .expect(401)
+        .end((err, res) => {
+          expect(res.status).to.equal(401);
+          expect(res.body).to.have.property('status').equal(401);
+          expect(res.body).to.have.property('error').equal('Email or password is incorrect');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
+    it('should not log in a new user with an invalid email', (done) => {
+      request(app)
+        .post(`${URL}/signin`)
+        .send(wrongEmailAuthUser)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body.error.email[0]).to.equal('"email" must be a valid email');
           if (err) return done(err);
           done();
         });
