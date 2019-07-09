@@ -2,10 +2,10 @@ import Joi from '@hapi/joi';
 
 
 export const createTripSchema = Joi.object().keys({
-  origin: Joi.string().regex(/^[a-zA-Z]+$/).min(2).max(30)
-    .required(),
-  destination: Joi.string().regex(/^[a-zA-Z]+$/).min(2).max(30)
-    .required(),
+  origin: Joi.string().required().regex(/^[a-zA-Z]+$/).min(2)
+    .max(30),
+  destination: Joi.string().required().regex(/^[a-zA-Z]+$/).min(2)
+    .max(30),
   bus_id: Joi.number().min(1).max(300).required(),
   fare: Joi.number().required(),
   trip_date: Joi.date().iso().greater('now').less('2029-12-31')
@@ -28,7 +28,7 @@ export const createTripSchema = Joi.object().keys({
       });
       return err;
     }),
-  trip_time: Joi.string().regex(/^([0-9]{2}):([0-9]{2})$/).required()
+  trip_time: Joi.string().required().regex(/^([0-9]{2}):([0-9]{2})$/)
     .error((err) => {
       err.forEach((error) => {
         switch (error.type) {
@@ -41,7 +41,8 @@ export const createTripSchema = Joi.object().keys({
       });
       return err;
     }),
-  duration: Joi.number().integer().min(30).required()
+  duration: Joi.number().integer().min(30).max(2880)
+    .required()
     .error((err) => {
       err.forEach((error) => {
         switch (error.type) {
@@ -49,8 +50,9 @@ export const createTripSchema = Joi.object().keys({
             error.message = '"duration" must be a number';
             break;
           case 'number.min':
+          case 'number.max':
           case 'number.integer':
-            error.message = '"duration" must be minutes greater than 30 e.g "45", "180" etc';
+            error.message = '"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc';
             break;
           default:
             error.message = '"duration" is required';

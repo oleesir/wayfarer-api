@@ -8,6 +8,7 @@ import {
   newTrip,
   emptyTrip,
   tomorrow,
+  incompleteTrip,
   tripWithYesterdayDate,
   tripWithTodayDate,
   tripWithUnavailableBus,
@@ -44,7 +45,7 @@ describe('Trips Route', () => {
         });
     });
 
-    it('should not create a trip when the type is an empty string', (done) => {
+    it('should not create a trip when payload is empty', (done) => {
       request(app)
         .post(`${URL}/trips`)
         .send(emptyTrip)
@@ -72,6 +73,28 @@ describe('Trips Route', () => {
             '"trip_time" must be in the 24 hour format e.g "08:30", "23:00" etc'
           ]);
           expect(error.duration).to.eql(['"duration" must be a number']);
+
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not create a trip when payload is incomplete', (done) => {
+      request(app)
+        .post(`${URL}/trips`)
+        .send(incompleteTrip)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+
+          expect(res.body).to.have.property('status').equal('error');
+          expect(error.origin).to.eql(['"origin" is required']);
+          expect(error.destination).to.eql(['"destination" is required']);
+          expect(error.fare).to.eql(['"fare" is required']);
+          expect(error.trip_date).to.eql(['"trip_date" is required']);
+          expect(error.trip_time).to.eql(['"trip_time" is required']);
+          expect(error.duration).to.eql(['"duration" is required']);
 
           if (err) return done(err);
           done();
@@ -132,6 +155,33 @@ describe('Trips Route', () => {
         });
     });
 
+    it('should not create a new trip with year after 2029', (done) => {
+      request(app)
+        .post(`${URL}/trips`)
+        .send({ ...tripWithTodayDate, trip_date: '2030-01-01' })
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(error.trip_date).to.eql(['"trip_date" must be a date before "2029-12-31"']);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not create a new trip with wrong date format', (done) => {
+      request(app)
+        .post(`${URL}/trips`)
+        .send({ ...tripWithTodayDate, trip_date: '01-01-2020' })
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(error.trip_date).to.eql(['"trip_date" must be in ISO 8601 (YYYY-MM-DD) date format e.g "2019-07-21"']);
+          if (err) return done(err);
+          done();
+        });
+    });
 
     it('should not create a new trip with an unavailable bus', (done) => {
       request(app)
@@ -197,5 +247,59 @@ describe('Trips Route', () => {
           done();
         });
     });
+  });
+
+  it('should not create a trip without authorization tokne provided', (done) => {
+    request(app)
+      .post(`${URL}/trips`)
+      .send(newTrip)
+      .expect(401)
+      .end((err, res) => {
+        expect(res.body).to.have.property('error').equal('Please provide a token');
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  it('should not create a trip with duration less than 30 minutes', (done) => {
+    request(app)
+      .post(`${URL}/trips`)
+      .send({ ...newTrip, duration: 25 })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(400)
+      .end((err, res) => {
+        const { error } = res.body;
+        expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  it('should not create a trip with duration more than 2 days (2880 minutes)', (done) => {
+    request(app)
+      .post(`${URL}/trips`)
+      .send({ ...newTrip, duration: 2895 })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(400)
+      .end((err, res) => {
+        const { error } = res.body;
+        expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  it('should not create a trip with duration that is not an integer', (done) => {
+    request(app)
+      .post(`${URL}/trips`)
+      .send({ ...newTrip, duration: 34.5 })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(400)
+      .end((err, res) => {
+        const { error } = res.body;
+        expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
+        if (err) return done(err);
+        done();
+      });
   });
 });

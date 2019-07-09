@@ -148,6 +148,11 @@ const emptyTrip = {
   trip_date: '',
   duration: ''
 };
+
+const incompleteTrip = {
+  bus_id: 3,
+};
+
 export {
   newUser,
   emptyUser,
@@ -174,6 +179,7 @@ export {
   newTrip,
   emptyTrip,
   tomorrow,
+  incompleteTrip,
   tripWithYesterdayDate,
   tripWithTomorrowDate,
   tripWithTodayDate,
