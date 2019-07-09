@@ -1,5 +1,7 @@
 import { Client } from 'pg';
-import { dropTables, createTables } from './config/migrations';
+import {
+  dropTables, createTables, createTypes, dropTypes
+} from './config/migrations';
 import seeders from './config/seeders';
 import getConfig from './config';
 
@@ -12,6 +14,8 @@ const setupDB = async () => {
   try {
     const query = `
       ${dropTables}
+      ${dropTypes}
+      ${createTypes}
       ${createTables}
       ${seeders}
     `;

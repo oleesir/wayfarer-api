@@ -1,4 +1,10 @@
 import jwt from 'jsonwebtoken';
+import moment from 'moment';
+
+const now = new Date();
+const today = moment(now, 'YYYY-MM-DD').format('YYYY-MM-DD');
+const tomorrow = moment(now, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD');
+const yesterday = moment(now, 'YYYY-MM-DD').subtract(1, 'days').format('YYYY-MM-DD');
 
 const newUser = {
   firstname: 'ryan',
@@ -41,7 +47,7 @@ const adminPayload = {
   firstname: 'Olisa',
   lastname: 'Emeka',
   password: 'secret',
-  isAdmin: true
+  is_admin: true
 };
 
 const userPayload = {
@@ -50,7 +56,7 @@ const userPayload = {
   firstname: 'Nneka',
   lastname: 'Oguah',
   password: 'secret',
-  isAdmin: false
+  is_admin: false
 };
 
 const userToken = jwt.sign(userPayload, process.env.SECRET_KEY, { expiresIn: '1day' });
@@ -61,6 +67,86 @@ const fakeToken = 'uh2ygy34758357t.njidvfhvbrubbjb';
 const emptyAuthUser = {
   email: '',
   password: ''
+};
+
+const newTrip = {
+  origin: 'Anambra',
+  destination: 'Benue',
+  bus_id: 3,
+  fare: 5000,
+  trip_time: '23:00',
+  trip_date: tomorrow,
+  duration: 30
+};
+
+const tripWithYesterdayDate = {
+  origin: 'Anambra',
+  destination: 'Benue',
+  bus_id: 3,
+  fare: 5000,
+  trip_time: '23:00',
+  trip_date: yesterday,
+  duration: 30
+};
+
+const tripWithTomorrowDate = {
+  origin: 'Anambra',
+  destination: 'Benue',
+  bus_id: 3,
+  fare: 5000,
+  trip_time: '23:00',
+  trip_date: tomorrow,
+  duration: 30
+};
+
+const tripWithTodayDate = {
+  origin: 'Anambra',
+  destination: 'Benue',
+  bus_id: 3,
+  fare: 5000,
+  trip_time: '23:00',
+  trip_date: today,
+  duration: 30
+};
+
+const tripWithUnavailableBus = {
+  origin: 'Anambra',
+  destination: 'Benue',
+  bus_id: 2,
+  fare: 5000,
+  trip_time: '23:00',
+  trip_date: tomorrow,
+  duration: 30
+};
+
+const tripWithUnexistingBus = {
+  origin: 'Anambra',
+  destination: 'Benue',
+  bus_id: 30,
+  fare: 5000,
+  trip_time: '23:00',
+  trip_date: tomorrow,
+  duration: 30
+};
+
+const tripWithUnavailableBusTwo = {
+  origin: 'Anambra',
+  destination: 'Benue',
+  bus_id: 3,
+  fare: 5000,
+  trip_time: '23:15',
+  trip_date: tomorrow,
+  duration: 30
+};
+
+const emptyTrip = {
+  origin: '',
+  destination: '',
+  bus_id: '',
+  fare: '',
+  trip_time: '',
+  trip_date: '',
+  duration: ''
 };
 export {
   newUser,
@@ -84,5 +170,14 @@ export {
   emptyPasswordAuthUser,
   wrongUserAuth,
   wrongUserAuthEmail,
-  wrongEmailAuthUser
+  wrongEmailAuthUser,
+  newTrip,
+  emptyTrip,
+  tomorrow,
+  tripWithYesterdayDate,
+  tripWithTomorrowDate,
+  tripWithTodayDate,
+  tripWithUnavailableBus,
+  tripWithUnexistingBus,
+  tripWithUnavailableBusTwo
 };
