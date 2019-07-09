@@ -46,7 +46,7 @@ export default class Model {
         `SELECT ${attributes} FROM ${this.table} WHERE ${constraint}`
       );
 
-      return Model.snakeToCamelCase(result.rows);
+      return result.rows;
     } catch (err) {
       return err.message;
     }
@@ -66,7 +66,7 @@ export default class Model {
         `INSERT INTO ${this.table}(${attributes}) VALUES(${values}) RETURNING *`
       );
 
-      return Model.snakeToCamelCase(result.rows);
+      return result.rows;
     } catch (err) {
       return err.message;
     }
@@ -85,7 +85,7 @@ export default class Model {
       const result = await this.pool.query(
         `UPDATE  ${this.table} SET ${attributes} WHERE ${constraint} RETURNING * `
       );
-      return Model.snakeToCamelCase(result.rows);
+      return result.rows;
     } catch (err) {
       return err.message;
     }
@@ -104,7 +104,7 @@ export default class Model {
       const result = await this.pool.query(
         `DELETE ${this.table} ${attributes} WHERE ${constraint} `
       );
-      return Model.snakeToCamelCase(result.rows);
+      return result.rows;
     } catch (err) {
       return err.message;
     }
@@ -120,33 +120,9 @@ export default class Model {
   async selectAll(attributes) {
     try {
       const result = await this.pool.query(`SELECT ${attributes} FROM ${this.table}`);
-      return Model.snakeToCamelCase(result.rows);
+      return result.rows;
     } catch (err) {
       return err.message;
     }
-  }
-
-  /**
-   * @static
-   *
-   * @method snakeToCamelCase
-   *
-   * @param {array} result
-   *
-   * @returns {array} rseult with camel case
-   */
-  static snakeToCamelCase(result) {
-    return result.map((item) => {
-      for (const [key, value] of Object.entries(item)) {
-        const camelCasedKey = key.replace(/(_\w)/g, m => m[1].toUpperCase());
-        item[camelCasedKey] = value;
-
-        if (key.match(/(_\w)/g)) {
-          delete item[key];
-        }
-      }
-
-      return item;
-    });
   }
 }
