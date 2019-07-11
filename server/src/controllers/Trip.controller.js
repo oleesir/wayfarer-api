@@ -87,4 +87,22 @@ export default class TripController {
       message: 'Trip was created successfully'
     });
   }
+
+
+  /**
+   * @method getAllTrips
+   *
+   * @param {object} req
+   * @param {object} res
+   *
+   * @returns {object} status code and message
+   */
+  static async getAllTrips(req, res) {
+    const allTrips = await trips.selectAll(['*']);
+
+    return res.status(200).json({
+      status: 'success',
+      data: allTrips
+    });
+  }
 }

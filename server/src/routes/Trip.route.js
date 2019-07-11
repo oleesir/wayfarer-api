@@ -7,9 +7,9 @@ import Authorization from '../middlewares/Authorization.middleware';
 
 const createTripValidation = new Validation(createTripSchema).validate;
 const { verifyToken, authorizeRole } = Authorization;
-const { createTrip } = TripController;
+const { createTrip, getAllTrips } = TripController;
 
 const router = Router();
 router.post('/', verifyToken, authorizeRole('admin'), createTripValidation, asyncErrorHandler(createTrip));
-
+router.get('/', verifyToken, asyncErrorHandler(getAllTrips));
 export default router;
