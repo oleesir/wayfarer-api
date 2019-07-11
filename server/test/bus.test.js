@@ -7,7 +7,9 @@ import {
   adminToken,
   emptyBusField,
   userToken,
-  fakeToken
+  fakeToken,
+  manufacturerHavingMoreThanThirtyChar,
+  modelHavingMoreThanTwentyChar
 } from './helpers/fixtures';
 
 const URL = '/api/v1/';
@@ -46,7 +48,7 @@ describe('Bus Route', () => {
           expect(error.number_plate).to.eql([
             '"number_plate" is required',
             '"number_plate" must be in this format e.g "JFK123PO", "KLM768TY" etc',
-            '"number_plate" must not be less than 8 characters'
+            '"number_plate" must have a length of 8 characters'
           ]);
           expect(error.manufacturer).to.eql([
             '"manufacturer" is required',
@@ -102,6 +104,38 @@ describe('Bus Route', () => {
           const { error } = res.body;
           expect(res.body).to.have.property('status').equal(401);
           expect(error).to.eql('Please provide a token');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not create a new bus when manufacturers length of characters is more than 30', (done) => {
+      request(app)
+        .post(`${URL}/buses`)
+        .send(manufacturerHavingMoreThanThirtyChar)
+        .expect(400)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(res.body).to.have.property('status').equal('error');
+          expect(error.manufacturer).to.eql(['"manufacturer" must be in this format e.g "General Motors", "Toyota" etc',
+            '"manufacturer" must not be more than 30 characters']);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
+    it('should not create a new bus when model length of characters is more than 20', (done) => {
+      request(app)
+        .post(`${URL}/buses`)
+        .send(modelHavingMoreThanTwentyChar)
+        .expect(400)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(res.body).to.have.property('status').equal('error');
+          expect(error.model).to.eql(['"model" must not be more than 20 characters']);
           if (err) return done(err);
           done();
         });

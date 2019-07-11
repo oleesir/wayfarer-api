@@ -169,6 +169,13 @@ const emptyBusField = {
   capacity: ''
 };
 
+const modelHavingMoreThanTwentyChar = {
+  ...newBus, model: 'WER234UYRERYHhvhgvhgvhgvjhgvhvgvjhvjhvgvjhcgcfgcgvgcvfcfcjycvfcf'
+};
+
+const manufacturerHavingMoreThanThirtyChar = {
+  ...newBus, manufacturer: 'WER234UYRERYHJBHJKVHDSBVJKSDBHVKJBDFHBVHFJDSBJHJHDVGWEVCGYEVHGCVCHGDVHSVKHDNJVKBUHSJFBFKUJSBVUKFHJSBDHJBFEHBV'
+};
 export {
   newUser,
   emptyUser,
@@ -203,5 +210,7 @@ export {
   tripWithUnavailableBus,
   tripWithUnexistingBus,
   tripWithUnavailableBusTwo,
-  newBus
+  newBus,
+  modelHavingMoreThanTwentyChar,
+  manufacturerHavingMoreThanThirtyChar
 };
