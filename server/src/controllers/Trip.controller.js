@@ -9,7 +9,7 @@ const buses = new Model('buses');
 /**
  * @class Trips
  */
-export default class Trips {
+export default class TripController {
   /**
    * @method createTrip
    *

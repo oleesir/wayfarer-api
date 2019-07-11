@@ -153,6 +153,29 @@ const incompleteTrip = {
   bus_id: 3,
 };
 
+const newBus = {
+  number_plate: 'WER234UY',
+  manufacturer: 'Grand Prime',
+  model: 'equinox',
+  year: 2006,
+  capacity: 17
+};
+
+const emptyBusField = {
+  number_plate: '',
+  manufacturer: '',
+  model: '',
+  year: '',
+  capacity: ''
+};
+
+const modelHavingMoreThanTwentyChar = {
+  ...newBus, model: 'WER234UYRERYHhvhgvhgvhgvjhgvhvgvjhvjhvgvjhcgcfgcgvgcvfcfcjycvfcf'
+};
+
+const manufacturerHavingMoreThanThirtyChar = {
+  ...newBus, manufacturer: 'WER234UYRERYHJBHJKVHDSBVJKSDBHVKJBDFHBVHFJDSBJHJHDVGWEVCGYEVHGCVCHGDVHSVKHDNJVKBUHSJFBFKUJSBVUKFHJSBDHJBFEHBV'
+};
 export {
   newUser,
   emptyUser,
@@ -173,6 +196,7 @@ export {
   emptyAuthUser,
   emptyEmailAuthUser,
   emptyPasswordAuthUser,
+  emptyBusField,
   wrongUserAuth,
   wrongUserAuthEmail,
   wrongEmailAuthUser,
@@ -185,5 +209,8 @@ export {
   tripWithTodayDate,
   tripWithUnavailableBus,
   tripWithUnexistingBus,
-  tripWithUnavailableBusTwo
+  tripWithUnavailableBusTwo,
+  newBus,
+  modelHavingMoreThanTwentyChar,
+  manufacturerHavingMoreThanThirtyChar
 };

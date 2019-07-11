@@ -249,7 +249,7 @@ describe('Trips Route', () => {
     });
   });
 
-  it('should not create a trip without authorization tokne provided', (done) => {
+  it('should not create a trip without authorization token provided', (done) => {
     request(app)
       .post(`${URL}/trips`)
       .send(newTrip)

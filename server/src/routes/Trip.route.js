@@ -7,8 +7,6 @@ import Authorization from '../middlewares/Authorization.middleware';
 
 const createTripValidation = new Validation(createTripSchema).validate;
 const { verifyToken, authorizeRole } = Authorization;
-
-
 const { createTrip } = TripController;
 
 const router = Router();
