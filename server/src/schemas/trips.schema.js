@@ -62,7 +62,11 @@ export const createTripSchema = Joi.object().keys({
     }),
 });
 
+export const getSingleTripSchema = Joi.object().keys({
+  id: Joi.number().integer().min(1)
+});
 
 export default{
-  createTripSchema
+  createTripSchema,
+  getSingleTripSchema
 };

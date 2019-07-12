@@ -11,4 +11,5 @@ const { signup, signin } = AuthController;
 
 router.post('/signup', signupValidation, asyncErrorHandler(signup));
 router.post('/signin', signinValidation, asyncErrorHandler(signin));
+
 export default router;

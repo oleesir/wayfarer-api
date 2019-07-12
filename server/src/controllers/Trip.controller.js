@@ -105,4 +105,50 @@ export default class TripController {
       data: allTrips
     });
   }
+
+
+  /**
+   * @method cancelTrip
+   *
+   * @param {object} req
+   * @param {object} res
+   *
+   * @returns {object} status amd message
+   */
+  static async getSingleTrip(req, res) {
+    const { id: Id } = req.params;
+    const [tripDetails] = await trips.select(['*'], [`id='${parseInt(Id, 10)}'`]);
+
+    if (!tripDetails) {
+      return res.status(400).json({
+        status: 'error',
+        error: 'Trip does not exist'
+      });
+    }
+
+    const {
+      id,
+      origin,
+      destination,
+      bus_id: busId,
+      fare,
+      duration
+    } = tripDetails;
+
+    const data = {
+      id,
+      origin,
+      destination,
+      bus_id: busId,
+      fare,
+      time: moment(tripDetails.trip_time, 'HH:mm').format('HH:mm'),
+      date: moment(tripDetails.trip_date).format('YYYY-MM-DD'),
+      duration
+    };
+
+    res.status(200).json({
+      status: 'success',
+      data
+    });
+  }
 }
