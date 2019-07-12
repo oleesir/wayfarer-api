@@ -23,7 +23,7 @@ export default class Validation {
  * @returns {function} res or next
  */
   validate = (req, res, next) => {
-    const validation = Joi.validate(req.body, this.schema, this.options);
+    const validation = Joi.validate({ ...req.body, ...req.query, ...req.params }, this.schema, this.options);
     if (validation.error) {
       const message = this._getMessage(validation.error);
       return res.status(400).json(message);

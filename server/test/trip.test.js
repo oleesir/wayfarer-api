@@ -16,7 +16,10 @@ import {
   tripWithUnavailableBusTwo,
   userToken,
   fakeToken,
-  expiredToken
+  expiredToken,
+  getATrip,
+  getANonexistingTrip,
+  getAnInvalidTrip
 } from './helpers/fixtures';
 
 const URL = '/api/v1/';
@@ -247,59 +250,158 @@ describe('Trips Route', () => {
           done();
         });
     });
+
+
+    it('should not create a trip without authorization token provided', (done) => {
+      request(app)
+        .post(`${URL}/trips`)
+        .send(newTrip)
+        .expect(401)
+        .end((err, res) => {
+          expect(res.body).to.have.property('error').equal('Please provide a token');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not create a trip with duration less than 30 minutes', (done) => {
+      request(app)
+        .post(`${URL}/trips`)
+        .send({ ...newTrip, duration: 25 })
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not create a trip with duration more than 2 days (2880 minutes)', (done) => {
+      request(app)
+        .post(`${URL}/trips`)
+        .send({ ...newTrip, duration: 2895 })
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not create a trip with duration that is not an integer', (done) => {
+      request(app)
+        .post(`${URL}/trips`)
+        .send({ ...newTrip, duration: 34.5 })
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
+          if (err) return done(err);
+          done();
+        });
+    });
   });
 
-  it('should not create a trip without authorization token provided', (done) => {
-    request(app)
-      .post(`${URL}/trips`)
-      .send(newTrip)
-      .expect(401)
-      .end((err, res) => {
-        expect(res.body).to.have.property('error').equal('Please provide a token');
-        if (err) return done(err);
-        done();
-      });
-  });
+  describe('Get trip', () => {
+    it('should allow an admin get a trip', (done) => {
+      request(app)
+        .get(`${URL}/trips/${getATrip}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data).to.have.property('id').equal(4);
+          expect(res.body.data).to.have.property('origin').equal('Anambra');
+          expect(res.body.data).to.have.property('destination').equal('Benue');
+          expect(res.body.data).to.have.property('bus_id').equal(3);
+          expect(res.body.data).to.have.property('time').equal('23:00');
+          expect(res.body.data).to.have.property('fare').equal('5000');
+          expect(res.body.data).to.have.property('date').equal(tomorrow);
+          expect(res.body.data).to.have.property('duration').equal(30);
 
-  it('should not create a trip with duration less than 30 minutes', (done) => {
-    request(app)
-      .post(`${URL}/trips`)
-      .send({ ...newTrip, duration: 25 })
-      .set('Authorization', `Bearer ${adminToken}`)
-      .expect(400)
-      .end((err, res) => {
-        const { error } = res.body;
-        expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
-        if (err) return done(err);
-        done();
-      });
-  });
+          if (err) return done(err);
+          done();
+        });
+    });
 
-  it('should not create a trip with duration more than 2 days (2880 minutes)', (done) => {
-    request(app)
-      .post(`${URL}/trips`)
-      .send({ ...newTrip, duration: 2895 })
-      .set('Authorization', `Bearer ${adminToken}`)
-      .expect(400)
-      .end((err, res) => {
-        const { error } = res.body;
-        expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
-        if (err) return done(err);
-        done();
-      });
-  });
+    it('should allow a user get a trip', (done) => {
+      request(app)
+        .get(`${URL}/trips/${getATrip}`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data).to.have.property('id').equal(4);
+          expect(res.body.data).to.have.property('origin').equal('Anambra');
+          expect(res.body.data).to.have.property('destination').equal('Benue');
+          expect(res.body.data).to.have.property('bus_id').equal(3);
+          expect(res.body.data).to.have.property('time').equal('23:00');
+          expect(res.body.data).to.have.property('fare').equal('5000');
+          expect(res.body.data).to.have.property('date').equal(tomorrow);
+          expect(res.body.data).to.have.property('duration').equal(30);
 
-  it('should not create a trip with duration that is not an integer', (done) => {
-    request(app)
-      .post(`${URL}/trips`)
-      .send({ ...newTrip, duration: 34.5 })
-      .set('Authorization', `Bearer ${adminToken}`)
-      .expect(400)
-      .end((err, res) => {
-        const { error } = res.body;
-        expect(error).to.have.property('duration').eql(['"duration" must be minutes greater than 30 and less than 2880 (i.e. 2 days) e.g "45", "180" etc']);
-        if (err) return done(err);
-        done();
-      });
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not allow a user get a non-existing trip', (done) => {
+      request(app)
+        .get(`${URL}/trips/${getANonexistingTrip}`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body).to.have.property('error').equal('Trip does not exist');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not allow an admin get a non-existing trip', (done) => {
+      request(app)
+        .get(`${URL}/trips/${getANonexistingTrip}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body).to.have.property('error').equal('Trip does not exist');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not allow an admin get an invalid trip', (done) => {
+      request(app)
+        .get(`${URL}/trips/${getAnInvalidTrip}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(res.body).to.have.property('status').equal('error');
+          expect(error.id).to.eql(['"id" must be a number']);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not allow a user get an invalid trip', (done) => {
+      request(app)
+        .get(`${URL}/trips/${getAnInvalidTrip}`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(res.body).to.have.property('status').equal('error');
+          expect(error.id).to.eql(['"id" must be a number']);
+          if (err) return done(err);
+          done();
+        });
+    });
   });
 });
