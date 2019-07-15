@@ -1,4 +1,7 @@
 import Joi from '@hapi/joi';
+import moment from 'moment';
+
+const now = moment().format('YYYY-MM-DD');
 
 
 export const createTripSchema = Joi.object().keys({
@@ -8,7 +11,7 @@ export const createTripSchema = Joi.object().keys({
     .max(30),
   bus_id: Joi.number().min(1).max(300).required(),
   fare: Joi.number().required(),
-  trip_date: Joi.date().iso().greater('now').less('2029-12-31')
+  trip_date: Joi.date().iso().greater(now).less('2029-12-31')
     .required()
     .error((err) => {
       err.forEach((error) => {
@@ -59,14 +62,21 @@ export const createTripSchema = Joi.object().keys({
         }
       });
       return err;
-    }),
+    })
 });
 
 export const getSingleTripSchema = Joi.object().keys({
   id: Joi.number().integer().min(1)
 });
 
+
+export const cancelTripSchema = Joi.object().keys({
+  id: Joi.number().integer().min(1),
+  status: Joi.string().valid(['done', 'started', 'unstarted', 'cancelled']).required()
+});
+
 export default{
   createTripSchema,
-  getSingleTripSchema
+  getSingleTripSchema,
+  cancelTripSchema
 };

@@ -10,20 +10,20 @@ export const dropTypes = `
 `;
 
 export const createTypes = `
-  CREATE TYPE TRIP_STATUS AS ENUM ('done', 'started', 'unstarted', 'canceled');
+  CREATE TYPE TRIP_STATUS AS ENUM ('done', 'started', 'unstarted', 'cancelled');
   CREATE TYPE BUS_STATUS AS ENUM ('available', 'unavailable');
 `;
 
 export const createTables = `
   CREATE TABLE IF NOT EXISTS users(
   id SERIAL PRIMARY KEY,
-  firstname VARCHAR NOT NULL,
-  lastname VARCHAR NOT NULL,
+  first_name VARCHAR NOT NULL,
+  last_name VARCHAR NOT NULL,
   email VARCHAR UNIQUE NOT NULL,
   password TEXT NOT NULL,
   is_admin BOOLEAN NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+  created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
 
   CREATE TABLE IF NOT EXISTS buses(
   id SERIAL PRIMARY KEY,
@@ -33,8 +33,8 @@ export const createTables = `
   year INT NOT NULL,
   capacity INT NOT NULL,
   status BUS_STATUS NOT NULL DEFAULT 'available',
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+  created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
 
   CREATE TABLE IF NOT EXISTS trips(
   id SERIAL PRIMARY KEY,
@@ -47,8 +47,8 @@ export const createTables = `
   duration INT NOT NULL,
   status TRIP_STATUS NOT NULL DEFAULT 'unstarted',
   FOREIGN KEY(bus_id) REFERENCES buses(id) ON DELETE SET NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+  created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
   
 `;
 

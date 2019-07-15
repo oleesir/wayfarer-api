@@ -24,9 +24,9 @@ export default class BusController {
     } = req.body;
 
 
-    const existingBus = await buses.select(['*'], [`number_plate='${numberPlate}'`]);
+    const [existingBus] = await buses.select(['*'], [`number_plate='${numberPlate}'`]);
 
-    if (existingBus.length > 0) {
+    if (existingBus) {
       return res.status(400).json({
         status: 'error',
         error: 'This bus already exists'
@@ -38,7 +38,7 @@ export default class BusController {
       [`'${numberPlate}','${manufacturer}','${model}',${year},${capacity}`]);
 
     const data = {
-      id: newBus.id,
+      bus_id: newBus.id,
       plate_number: newBus.number_plate,
       manufacturer: newBus.manufacturer,
       model: newBus.model,

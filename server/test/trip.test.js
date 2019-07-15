@@ -17,9 +17,10 @@ import {
   userToken,
   fakeToken,
   expiredToken,
-  getATrip,
-  getANonexistingTrip,
-  getAnInvalidTrip
+  tripId,
+  cancelTrip,
+  wrongTripUpdate,
+  emptyCancelTrip
 } from './helpers/fixtures';
 
 const URL = '/api/v1/';
@@ -34,14 +35,15 @@ describe('Trips Route', () => {
         .expect(201)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('success');
-          expect(res.body.data).to.have.property('id').equal(4);
+          expect(res.body.data).to.have.property('trip_id').equal(6);
           expect(res.body.data).to.have.property('origin').equal('Anambra');
           expect(res.body.data).to.have.property('destination').equal('Benue');
           expect(res.body.data).to.have.property('bus_id').equal(3);
-          expect(res.body.data).to.have.property('time').equal('23:00');
+          expect(res.body.data).to.have.property('trip_time').equal('23:00');
           expect(res.body.data).to.have.property('fare').equal('5000');
-          expect(res.body.data).to.have.property('date').equal(tomorrow);
+          expect(res.body.data).to.have.property('trip_date').equal(tomorrow);
           expect(res.body.data).to.have.property('duration').equal(30);
+          expect(res.body.data).to.have.property('status').equal('unstarted');
           expect(res.body).to.have.property('message').equal('Trip was created successfully');
           if (err) return done(err);
           done();
@@ -310,40 +312,65 @@ describe('Trips Route', () => {
   describe('Get trip', () => {
     it('should allow an admin get a trip', (done) => {
       request(app)
-        .get(`${URL}/trips/${getATrip}`)
+        .get(`${URL}/trips/${tripId}`)
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('success');
-          expect(res.body.data).to.have.property('id').equal(4);
-          expect(res.body.data).to.have.property('origin').equal('Anambra');
-          expect(res.body.data).to.have.property('destination').equal('Benue');
-          expect(res.body.data).to.have.property('bus_id').equal(3);
-          expect(res.body.data).to.have.property('time').equal('23:00');
-          expect(res.body.data).to.have.property('fare').equal('5000');
-          expect(res.body.data).to.have.property('date').equal(tomorrow);
-          expect(res.body.data).to.have.property('duration').equal(30);
-
+          expect(res.body.data).to.have.property('trip_id').equal(4);
+          expect(res.body.data).to.have.property('origin').equal('Lagos');
+          expect(res.body.data).to.have.property('destination').equal('Adamawa');
+          expect(res.body.data).to.have.property('bus_id').equal(6);
+          expect(res.body.data).to.have.property('trip_time').equal('08:50');
+          expect(res.body.data).to.have.property('fare').equal('4000');
+          expect(res.body.data).to.have.property('trip_date').equal('2019-09-15');
+          expect(res.body.data).to.have.property('duration').equal(120);
           if (err) return done(err);
           done();
         });
     });
 
-    it('should allow a user get a trip', (done) => {
+    it('should allow an admin get all trips', (done) => {
       request(app)
-        .get(`${URL}/trips/${getATrip}`)
+        .get(`${URL}/trips`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
+    it('should allow a user get all trips', (done) => {
+      request(app)
+        .get(`${URL}/trips`)
         .set('Authorization', `Bearer ${userToken}`)
         .expect(200)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('success');
-          expect(res.body.data).to.have.property('id').equal(4);
-          expect(res.body.data).to.have.property('origin').equal('Anambra');
-          expect(res.body.data).to.have.property('destination').equal('Benue');
-          expect(res.body.data).to.have.property('bus_id').equal(3);
-          expect(res.body.data).to.have.property('time').equal('23:00');
-          expect(res.body.data).to.have.property('fare').equal('5000');
-          expect(res.body.data).to.have.property('date').equal(tomorrow);
-          expect(res.body.data).to.have.property('duration').equal(30);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
+    it('should allow a user get a trip', (done) => {
+      request(app)
+        .get(`${URL}/trips/${tripId}`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data).to.have.property('trip_id').equal(4);
+          expect(res.body.data).to.have.property('origin').equal('Lagos');
+          expect(res.body.data).to.have.property('destination').equal('Adamawa');
+          expect(res.body.data).to.have.property('bus_id').equal(6);
+          expect(res.body.data).to.have.property('trip_time').equal('08:50');
+          expect(res.body.data).to.have.property('fare').equal('4000');
+          expect(res.body.data).to.have.property('trip_date').equal('2019-09-15');
+          expect(res.body.data).to.have.property('duration').equal(120);
 
           if (err) return done(err);
           done();
@@ -352,7 +379,7 @@ describe('Trips Route', () => {
 
     it('should not allow a user get a non-existing trip', (done) => {
       request(app)
-        .get(`${URL}/trips/${getANonexistingTrip}`)
+        .get(`${URL}/trips/50000`)
         .set('Authorization', `Bearer ${userToken}`)
         .expect(400)
         .end((err, res) => {
@@ -365,7 +392,7 @@ describe('Trips Route', () => {
 
     it('should not allow an admin get a non-existing trip', (done) => {
       request(app)
-        .get(`${URL}/trips/${getANonexistingTrip}`)
+        .get(`${URL}/trips/50000`)
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(400)
         .end((err, res) => {
@@ -378,7 +405,7 @@ describe('Trips Route', () => {
 
     it('should not allow an admin get an invalid trip', (done) => {
       request(app)
-        .get(`${URL}/trips/${getAnInvalidTrip}`)
+        .get(`${URL}/trips/wertq`)
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(400)
         .end((err, res) => {
@@ -392,13 +419,61 @@ describe('Trips Route', () => {
 
     it('should not allow a user get an invalid trip', (done) => {
       request(app)
-        .get(`${URL}/trips/${getAnInvalidTrip}`)
+        .get(`${URL}/trips/wertq`)
         .set('Authorization', `Bearer ${userToken}`)
         .expect(400)
         .end((err, res) => {
           const { error } = res.body;
           expect(res.body).to.have.property('status').equal('error');
           expect(error.id).to.eql(['"id" must be a number']);
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
+
+  describe('Update trip', () => {
+    it('should allow an admin cancel a trip', (done) => {
+      request(app)
+        .patch(`${URL}/trips/${tripId}`)
+        .send(cancelTrip)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body).to.have.property('message').equal('Status was successfully updated');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+
+    it('should not allow an admin use another value', (done) => {
+      request(app)
+        .patch(`${URL}/trips/${tripId}`)
+        .send(wrongTripUpdate)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(res.body).to.have.property('status').equal('error');
+          expect(error.status).to.eql(['"status" must be one of [done, started, unstarted, cancelled]']);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not allow an admin update with an empty another string ', (done) => {
+      request(app)
+        .patch(`${URL}/trips/${tripId}`)
+        .send(emptyCancelTrip)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(400)
+        .end((err, res) => {
+          const { error } = res.body;
+          expect(res.body).to.have.property('status').equal('error');
+          expect(error.status).to.eql(['"status" is not allowed to be empty',
+            '"status" must be one of [done, started, unstarted, cancelled]']);
           if (err) return done(err);
           done();
         });

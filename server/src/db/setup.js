@@ -8,10 +8,10 @@ import getConfig from './config';
 const config = getConfig();
 const connectString = new Client(config);
 
-connectString.connect();
-
 const setupDB = async () => {
   try {
+    await connectString.connect();
+
     const query = `
       ${dropTables}
       ${dropTypes}
@@ -24,6 +24,7 @@ const setupDB = async () => {
 
     connectString.end();
   } catch (err) {
+    console.log(err);
     await connectString.end();
   }
 };

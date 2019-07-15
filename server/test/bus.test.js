@@ -24,7 +24,7 @@ describe('Bus Route', () => {
         .expect(201)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('success');
-          expect(res.body.data).to.have.property('id').equal(7);
+          expect(res.body.data).to.have.property('bus_id').equal(7);
           expect(res.body.data).to.have.property('plate_number').equal('WER234UY');
           expect(res.body.data).to.have.property('manufacturer').equal('Grand Prime');
           expect(res.body.data).to.have.property('model').equal('equinox');

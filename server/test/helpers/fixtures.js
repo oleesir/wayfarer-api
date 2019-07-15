@@ -7,8 +7,8 @@ const tomorrow = moment(now, 'YYYY-MM-DD').add(1, 'days').format('YYYY-MM-DD');
 const yesterday = moment(now, 'YYYY-MM-DD').subtract(1, 'days').format('YYYY-MM-DD');
 
 const newUser = {
-  firstname: 'ryan',
-  lastname: 'gosling',
+  first_name: 'ryan',
+  last_name: 'gosling',
   email: 'ryan@gmail.com',
   password: 'ryangosl'
 };
@@ -26,10 +26,10 @@ const authUser = {
   password: 'ryangosl'
 };
 
-const emptyFirstName = { ...newUser, firstname: '' };
-const emptyLastName = { ...newUser, lastname: '' };
-const nonAlphabetsFirstName = { ...newUser, firstname: '/865' };
-const nonAlphabetsLastName = { ...newUser, lastname: '/865' };
+const emptyFirstName = { ...newUser, first_name: '' };
+const emptyLastName = { ...newUser, last_name: '' };
+const nonAlphabetsFirstName = { ...newUser, first_name: '/865' };
+const nonAlphabetsLastName = { ...newUser, last_name: '/865' };
 const emptyEmail = { ...newUser, email: '' };
 const invalidEmail = { ...newUser, email: 'ryangmail.com' };
 const emptyPassword = { ...newUser, password: '' };
@@ -44,8 +44,8 @@ const wrongUserAuthEmail = { ...authUser, email: 'kennygray@gmail.com', password
 const adminPayload = {
   id: 1,
   email: 'oleesir@gmail.com',
-  firstname: 'Olisa',
-  lastname: 'Emeka',
+  first_name: 'Olisa',
+  last_name: 'Emeka',
   password: 'secret',
   is_admin: true
 };
@@ -53,8 +53,8 @@ const adminPayload = {
 const userPayload = {
   id: 2,
   email: 'nneka@gmail.com',
-  firstname: 'Nneka',
-  lastname: 'Oguah',
+  first_name: 'Nneka',
+  last_name: 'Oguah',
   password: 'secret',
   is_admin: false
 };
@@ -178,9 +178,19 @@ const manufacturerHavingMoreThanThirtyChar = {
   ...newBus, manufacturer: 'WER234UYRERYHJBHJKVHDSBVJKSDBHVKJBDFHBVHFJDSBJHJHDVGWEVCGYEVHGCVCHGDVHSVKHDNJVKBUHSJFBFKUJSBVUKFHJSBDHJBFEHBV'
 };
 
-const getATrip = 4;
-const getANonexistingTrip = 50000;
-const getAnInvalidTrip = 'wertq';
+const tripId = 4;
+
+const cancelTrip = {
+  status: 'cancelled'
+};
+
+const wrongTripUpdate = {
+  status: 'abort'
+};
+
+const emptyCancelTrip = {
+  status: ''
+};
 
 export {
   newUser,
@@ -219,7 +229,8 @@ export {
   newBus,
   modelHavingMoreThanTwentyChar,
   manufacturerHavingMoreThanThirtyChar,
-  getATrip,
-  getANonexistingTrip,
-  getAnInvalidTrip
+  tripId,
+  cancelTrip,
+  emptyCancelTrip,
+  wrongTripUpdate
 };
