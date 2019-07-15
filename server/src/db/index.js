@@ -35,8 +35,8 @@ export default class Model {
    *
    * @method select
    *
-   * @param {string} attributes
-   * @param {string} constraint
+   * @param {array} attributes
+   * @param {array} constraint
    *
    * @returns {query} query
    */
@@ -48,15 +48,15 @@ export default class Model {
 
       return result.rows;
     } catch (err) {
-      return err.message;
+      console.log(err.message);
     }
   }
 
   /**
-   *  @method create
+   * @method create
    *
-   * @param {string} attributes
-   * @param {string} values
+   * @param {array} attributes
+   * @param {array} values
    *
    * @returns {query} query
    */
@@ -68,15 +68,15 @@ export default class Model {
 
       return result.rows;
     } catch (err) {
-      return err.message;
+      console.log(err.message);
     }
   }
 
   /**
  * @method update
  *
- * @param {string} attributes
- * @param {string} constraint
+ * @param {array} attributes
+ * @param {array} constraint
  *
  * @returns {query} query
  */
@@ -87,33 +87,32 @@ export default class Model {
       );
       return result.rows;
     } catch (err) {
-      return err.message;
+      console.log(err.message);
     }
   }
 
   /**
    * @method delete
    *
-   * @param {string} attributes
-   * @param {string} constraint
+   * @param {array} constraint
    *
    * @returns {query} query
    */
-  async delete(attributes, constraint) {
+  async delete(constraint) {
     try {
       const result = await this.pool.query(
-        `DELETE ${this.table} ${attributes} WHERE ${constraint} `
+        `DELETE FROM ${this.table} WHERE ${constraint}`
       );
-      return result.rows;
+      return result;
     } catch (err) {
-      return err.message;
+      console.log(err.message);
     }
   }
 
   /**
    * @method selectAll
    *
-   * @param {string} attributes
+   * @param {array} attributes
    *
    * @returns {query} query
    */
@@ -122,7 +121,7 @@ export default class Model {
       const result = await this.pool.query(`SELECT ${attributes} FROM ${this.table}`);
       return result.rows;
     } catch (err) {
-      return err.message;
+      console.log(err.message);
     }
   }
 }

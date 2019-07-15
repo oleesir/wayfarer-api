@@ -21,7 +21,7 @@ export default class AuthController {
    */
   static async signup(req, res) {
     const {
-      firstname, lastname, email, password
+      first_name, last_name, email, password
     } = req.body;
 
     const existingUser = await users.select(['email'], [`email='${email}'`]);
@@ -36,14 +36,14 @@ export default class AuthController {
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     const [newUser] = await users.create(
-      ['firstname', 'lastname', 'email', 'password', 'is_admin'],
-      [`'${firstname}', '${lastname}', '${email}', '${hashedPassword}', false`]
+      ['first_name', 'last_name', 'email', 'password', 'is_admin'],
+      [`'${first_name}', '${last_name}', '${email}', '${hashedPassword}', false`]
     );
 
     const payload = {
-      id: newUser.id,
-      firstname: newUser.firstname,
-      lastname: newUser.lastname,
+      user_id: newUser.id,
+      first_name: newUser.first_name,
+      last_name: newUser.last_name,
       email: newUser.email,
       is_admin: newUser.is_admin
     };
@@ -73,10 +73,21 @@ export default class AuthController {
    */
   static async signin(req, res) {
     const { password, email } = req.body;
-    const findUser = await users.select(['*'], `email='${email}'`);
+    const [user] = await users.select(['*'], `email='${email}'`);
 
-    if (findUser.length > 0) {
-      const verifyUserPassword = bcrypt.compareSync(password, findUser[0].password);
+    if (!user) {
+      return res.status(401).json({
+        status: 401,
+        error: 'Email or password is incorrect'
+
+      });
+    }
+
+    if (user) {
+      const {
+        id: user_id, first_name, last_name, is_admin
+      } = user;
+      const verifyUserPassword = bcrypt.compareSync(password, user.password);
 
       if (!verifyUserPassword) {
         return res.status(401).json({
@@ -87,21 +98,17 @@ export default class AuthController {
       }
 
       const payload = {
-        id: findUser[0].id,
-        firstname: findUser[0].firstname,
-        lastname: findUser[0].lastname,
-        email: findUser[0].email,
-        is_admin: findUser[0].is_admin
+        user_id,
+        first_name,
+        last_name,
+        email,
+        is_admin
       };
 
       const token = Authorization.generateToken(payload);
 
       const data = {
-        id: findUser[0].id,
-        firstname: findUser[0].firstname,
-        lastname: findUser[0].lastname,
-        email: findUser[0].email,
-        is_admin: findUser[0].is_admin,
+        ...payload,
         token
       };
 

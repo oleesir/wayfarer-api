@@ -22,14 +22,14 @@ export default class TripController {
     const {
       origin,
       destination,
-      bus_id: busId,
+      bus_id,
       fare,
-      trip_date: tripDate,
-      trip_time: tripTime,
+      trip_date,
+      trip_time,
       duration: tripDuration
     } = req.body;
-    const [bus] = await buses.select(['*'], [`id='${busId}'`]);
-    const existingTripsWithBus = await trips.select(['*'], [`bus_id='${busId}' AND status!='done'`]);
+    const [bus] = await buses.select(['*'], [`id='${bus_id}'`]);
+    const existingTripsWithBus = await trips.select(['*'], [`bus_id='${bus_id}' AND status!='done'`]);
 
     if (!bus) {
       return res.status(400).json({
@@ -50,7 +50,7 @@ export default class TripController {
         {
           from: tripStartTime,
           to: tripEndTime
-        } = getTripTimeRange(tripDate, tripTime, tripDuration);
+        } = getTripTimeRange(trip_date, trip_time, tripDuration);
 
       const isBusUnAvailable = existingTripsWithBus.some((trip) => {
         const { from, to } = getTripTimeRange(trip.trip_date, trip.trip_time, trip.duration);
@@ -68,17 +68,19 @@ export default class TripController {
     }
 
     const [newTrip] = await trips.create(['origin', 'destination', 'bus_id', 'fare', 'trip_time', 'trip_date', 'duration'],
-      [`'${origin}','${destination}', ${busId}, ${fare},'${tripTime}','${tripDate}',${tripDuration}`]);
+      [`'${origin}','${destination}', ${bus_id}, ${fare},'${trip_time}','${trip_date}',${tripDuration}`]);
 
     const data = {
-      id: newTrip.id,
+      trip_id: newTrip.id,
       origin: newTrip.origin,
       destination: newTrip.destination,
       bus_id: newTrip.bus_id,
       fare: newTrip.fare,
-      time: moment(newTrip.trip_time, 'HH:mm').format('HH:mm'),
-      date: moment(newTrip.trip_date).format('YYYY-MM-DD'),
-      duration: newTrip.duration
+      trip_time: moment(newTrip.trip_time, 'HH:mm').format('HH:mm'),
+      trip_date: moment(newTrip.trip_date).format('YYYY-MM-DD'),
+      duration: newTrip.duration,
+      status: newTrip.status
+
     };
 
     return res.status(201).json({
@@ -100,9 +102,21 @@ export default class TripController {
   static async getAllTrips(req, res) {
     const allTrips = await trips.selectAll(['*']);
 
+    const data = allTrips.map(trip => ({
+      trip_id: trip.id,
+      origin: trip.origin,
+      destination: trip.destination,
+      bus_id: trip.bus_id,
+      fare: trip.fare,
+      trip_time: moment(trip.trip_time, 'HH:mm').format('HH:mm'),
+      trip_date: moment(trip.trip_date).format('YYYY-MM-DD'),
+      duration: trip.duration,
+      status: trip.status
+    }));
+
     return res.status(200).json({
       status: 'success',
-      data: allTrips
+      data
     });
   }
 
@@ -116,8 +130,8 @@ export default class TripController {
    * @returns {object} status amd message
    */
   static async getSingleTrip(req, res) {
-    const { id: Id } = req.params;
-    const [tripDetails] = await trips.select(['*'], [`id='${parseInt(Id, 10)}'`]);
+    const { id: tripId } = req.params;
+    const [tripDetails] = await trips.select(['*'], [`id='${tripId}'`]);
 
     if (!tripDetails) {
       return res.status(400).json({
@@ -127,28 +141,74 @@ export default class TripController {
     }
 
     const {
-      id,
+      id: trip_id,
       origin,
       destination,
-      bus_id: busId,
+      bus_id,
       fare,
-      duration
+      duration,
+      status
     } = tripDetails;
 
     const data = {
-      id,
+      trip_id,
       origin,
       destination,
-      bus_id: busId,
+      bus_id,
       fare,
-      time: moment(tripDetails.trip_time, 'HH:mm').format('HH:mm'),
-      date: moment(tripDetails.trip_date).format('YYYY-MM-DD'),
-      duration
+      trip_time: moment(tripDetails.trip_time, 'HH:mm').format('HH:mm'),
+      trip_date: moment(tripDetails.trip_date).format('YYYY-MM-DD'),
+      duration,
+      status
     };
 
     res.status(200).json({
       status: 'success',
       data
+    });
+  }
+
+
+  /**
+   * @method cancelTrip
+   *
+   * @param {object} req
+   * @param {object} res
+   *
+   * @returns {object} status and message
+   */
+  static async cancelTrip(req, res) {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const [tripToUpdate] = await trips.select(['*'], [`id=${id}`]);
+
+    if (!tripToUpdate) {
+      return res.status(404).json({
+        status: 'error',
+        error: 'Trip does not exist'
+      });
+    }
+
+    if (tripToUpdate.status === 'cancelled') {
+      return res.status(409).json({
+        status: 409,
+        error: 'Trip is already cancelled'
+      });
+    }
+
+    if (['started', 'done'].includes(tripToUpdate.status)) {
+      return res.status(409).json({
+        status: 400,
+        error: 'Trip is already started/done and cannot be cancelled'
+      });
+    }
+
+    await trips.update([`status='${status}'`], [`id=${id}`]);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Status was successfully updated'
     });
   }
 }

@@ -68,7 +68,6 @@
     ],
     "class-methods-use-this": 0,
     "no-restricted-syntax": 0,
-    "camelcase": ["error", {"properties": "never"}]
-
+    "camelcase": 0
   },
 }

@@ -48,8 +48,8 @@ describe('Auth Routes', () => {
         .expect(400)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('error');
-          expect(res.body.error.firstname[0]).to.equal('"firstname" is required');
-          expect(res.body.error.lastname[0]).to.equal('"lastname" is required');
+          expect(res.body.error.first_name[0]).to.equal('"first_name" is required');
+          expect(res.body.error.last_name[0]).to.equal('"last_name" is required');
           expect(res.body.error.email[0]).to.equal('"email" is not allowed to be empty');
           expect(res.body.error.password[0]).to.equal('"password" is not allowed to be empty');
           if (err) return done(err);
@@ -65,7 +65,7 @@ describe('Auth Routes', () => {
         .expect(400)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('error');
-          expect(res.body.error.firstname[0]).to.equal('"firstname" is not allowed to be empty');
+          expect(res.body.error.first_name[0]).to.equal('"first_name" is not allowed to be empty');
           if (err) return done(err);
           done();
         });
@@ -78,7 +78,7 @@ describe('Auth Routes', () => {
         .expect(400)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('error');
-          expect(res.body.error.lastname[0]).to.equal('"lastname" is not allowed to be empty');
+          expect(res.body.error.last_name[0]).to.equal('"last_name" is not allowed to be empty');
           if (err) return done(err);
           done();
         });
@@ -92,7 +92,7 @@ describe('Auth Routes', () => {
         .expect(400)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('error');
-          expect(res.body.error.firstname[0]).to.equal('"firstname" with value "/865" fails to match the required pattern: /^[a-zA-Z]+$/');
+          expect(res.body.error.first_name[0]).to.equal('"first_name" with value "/865" fails to match the required pattern: /^[a-zA-Z]+$/');
           if (err) return done(err);
           done();
         });
@@ -105,7 +105,7 @@ describe('Auth Routes', () => {
         .expect(400)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('error');
-          expect(res.body.error.lastname[0]).to.equal('"lastname" with value "/865" fails to match the required pattern: /^[a-zA-Z]+$/');
+          expect(res.body.error.last_name[0]).to.equal('"last_name" with value "/865" fails to match the required pattern: /^[a-zA-Z]+$/');
           if (err) return done(err);
           done();
         });

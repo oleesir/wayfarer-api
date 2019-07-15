@@ -13,6 +13,7 @@ const allowanceInHour = 1;
  */
 function getTripTimeRange(startDate, startTime, duration) {
   const date = (moment(startDate).format('YYYY-MM-DD')).split('-'); // ['2019', '07', '08']
+  // console.log(date);
   const time = startTime.split(':');
 
   const from = moment().set({
@@ -26,6 +27,8 @@ function getTripTimeRange(startDate, startTime, duration) {
     hours: Number(time[0]) + allowanceInHour,
     minutes: (Number(time[1]) + Number(duration))
   }).format('YYYY-MM-DDTHH:mm');
+  // console.log(startDate, startTime, `from=> ${from}`, `to => ${to}`);
+
   return { from, to };
 }
 

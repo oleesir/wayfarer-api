@@ -8,13 +8,13 @@ const adminPassword = bcrypt.hashSync(ADMIN_PASSWORD, 10);
 const userPassword = bcrypt.hashSync(USER_PASSWORD, 10);
 
 export default `
-  INSERT INTO users (firstname, lastname, email ,password, is_admin)
+  INSERT INTO users (first_name, last_name, email ,password, is_admin)
   VALUES('Olisa', 'Emeka', 'oleesir@gmail.com' ,'${adminPassword}', true);
-  INSERT INTO users (firstname, lastname, email ,password, is_admin)
+  INSERT INTO users (first_name, last_name, email ,password, is_admin)
   VALUES('Nneka', 'Oguah', 'nneka@gmail.com' ,'${userPassword}', false);
-  INSERT INTO users (firstname, lastname, email ,password, is_admin)
+  INSERT INTO users (first_name, last_name, email ,password, is_admin)
   VALUES('James', 'Udoh', 'james@gmail.com' ,'${userPassword}', false);
-  INSERT INTO users (firstname, lastname, email ,password, is_admin)
+  INSERT INTO users (first_name, last_name, email ,password, is_admin)
   VALUES('Amaka', 'Emodi', 'amaka@gmail.com' ,'${adminPassword}', true);
 
   INSERT INTO buses (number_plate, manufacturer, model, year, status, capacity)
@@ -36,4 +36,8 @@ export default `
   VALUES('Lagos', 'Anambra', 2 , 3000, '07:30', '2019-08-10', 45, 'unstarted');
   INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status)
   VALUES('Lagos', 'Benue', 1 , 4000, '07:50', '2019-08-15', 120, 'unstarted');  
+  INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status)
+  VALUES('Lagos', 'Adamawa', 6 , 4000, '08:50', '2019-09-15', 120, 'unstarted'); 
+  INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status)
+  VALUES('Lagos', 'Abuja', 5 , 9000, '09:00', '2019-09-15', 120, 'unstarted'); 
 `;
