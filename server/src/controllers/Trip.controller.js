@@ -67,8 +67,8 @@ export default class TripController {
       }
     }
 
-    const [newTrip] = await trips.create(['origin', 'destination', 'bus_id', 'fare', 'trip_time', 'trip_date', 'duration'],
-      [`'${origin}','${destination}', ${bus_id}, ${fare},'${trip_time}','${trip_date}',${tripDuration}`]);
+    const [newTrip] = await trips.create(['origin', 'destination', 'bus_id', 'fare', 'trip_time', 'trip_date', 'duration', 'available_seats'],
+      [`'${origin}','${destination}', ${bus_id}, ${fare},'${trip_time}','${trip_date}',${tripDuration},${bus.capacity}`]);
 
     const data = {
       trip_id: newTrip.id,
@@ -197,10 +197,10 @@ export default class TripController {
       });
     }
 
-    if (['started', 'done'].includes(tripToUpdate.status)) {
+    if (['active', 'done'].includes(tripToUpdate.status)) {
       return res.status(409).json({
         status: 400,
-        error: 'Trip is already started/done and cannot be cancelled'
+        error: 'Trip is already active/done and cannot be cancelled'
       });
     }
 

@@ -35,7 +35,7 @@ describe('Model: bad input', () => {
 
   describe('update', () => {
     it('should not update table with bad constraint', (done) => {
-      users.update(['status=\'canceled'], ['id=1'])
+      users.update(['status=\'cancelled'], ['id=1'])
         .then((result) => {
           expect(result === undefined).to.equal(true);
           done();
