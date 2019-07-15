@@ -41,14 +41,13 @@ export default class Model {
    * @returns {query} query
    */
   async select(attributes, constraint) {
+    const query = `SELECT ${attributes} FROM ${this.table} WHERE ${constraint}`;
     try {
-      const result = await this.pool.query(
-        `SELECT ${attributes} FROM ${this.table} WHERE ${constraint}`
-      );
+      const result = await this.pool.query(query);
 
       return result.rows;
     } catch (err) {
-      console.log(err.message);
+      console.log(query, err.message);
     }
   }
 
@@ -61,14 +60,13 @@ export default class Model {
    * @returns {query} query
    */
   async create(attributes, values) {
+    const query = `INSERT INTO ${this.table}(${attributes}) VALUES(${values}) RETURNING *`;
     try {
-      const result = await this.pool.query(
-        `INSERT INTO ${this.table}(${attributes}) VALUES(${values}) RETURNING *`
-      );
+      const result = await this.pool.query(query);
 
       return result.rows;
     } catch (err) {
-      console.log(err.message);
+      console.log(query, err.message);
     }
   }
 
@@ -81,13 +79,12 @@ export default class Model {
  * @returns {query} query
  */
   async update(attributes, constraint) {
+    const query = `UPDATE  ${this.table} SET ${attributes} WHERE ${constraint} RETURNING *`;
     try {
-      const result = await this.pool.query(
-        `UPDATE  ${this.table} SET ${attributes} WHERE ${constraint} RETURNING * `
-      );
+      const result = await this.pool.query(query);
       return result.rows;
     } catch (err) {
-      console.log(err.message);
+      console.log(query, err.message);
     }
   }
 
@@ -99,13 +96,12 @@ export default class Model {
    * @returns {query} query
    */
   async delete(constraint) {
+    const query = `DELETE FROM ${this.table} WHERE ${constraint}`;
     try {
-      const result = await this.pool.query(
-        `DELETE FROM ${this.table} WHERE ${constraint}`
-      );
+      const result = await this.pool.query(query);
       return result;
     } catch (err) {
-      console.log(err.message);
+      console.log(query, err.message);
     }
   }
 
@@ -117,11 +113,12 @@ export default class Model {
    * @returns {query} query
    */
   async selectAll(attributes) {
+    const query = `SELECT ${attributes} FROM ${this.table}`;
     try {
-      const result = await this.pool.query(`SELECT ${attributes} FROM ${this.table}`);
+      const result = await this.pool.query(query);
       return result.rows;
     } catch (err) {
-      console.log(err.message);
+      console.log(query, err.message);
     }
   }
 }

@@ -1,4 +1,5 @@
 import Joi from '@hapi/joi';
+import { authSchema } from './users.schema';
 
 export const createBusSchema = Joi.object().keys({
   number_plate: Joi.string().regex(/^[A-Z]{3}[0-9]{2,3}[A-Z]{2}$/).length(8)
@@ -62,7 +63,7 @@ export const createBusSchema = Joi.object().keys({
     }),
   year: Joi.number().required(),
   capacity: Joi.number().min(6).max(17)
-});
+}).concat(authSchema);
 
 export default {
   createBusSchema

@@ -1,5 +1,6 @@
 import Joi from '@hapi/joi';
 import moment from 'moment';
+import { authSchema } from './users.schema';
 
 const now = moment().format('YYYY-MM-DD');
 
@@ -63,17 +64,16 @@ export const createTripSchema = Joi.object().keys({
       });
       return err;
     })
-});
+}).concat(authSchema);
 
 export const getSingleTripSchema = Joi.object().keys({
   id: Joi.number().integer().min(1)
-});
-
+}).concat(authSchema);
 
 export const cancelTripSchema = Joi.object().keys({
   id: Joi.number().integer().min(1),
-  status: Joi.string().valid(['done', 'started', 'unstarted', 'cancelled']).required()
-});
+  status: Joi.string().valid(['done', 'active', 'pending', 'cancelled']).required()
+}).concat(authSchema);
 
 export default{
   createTripSchema,

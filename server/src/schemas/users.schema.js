@@ -14,7 +14,13 @@ export const signinSchema = Joi.object().keys({
   password: Joi.string().min(8).required()
 });
 
+// user_id and is_admin not provided because token already contains them
+export const authSchema = Joi.object().keys({
+  token: Joi.string(),
+});
+
 export default{
+  authSchema,
   signupSchema,
   signinSchema
 };

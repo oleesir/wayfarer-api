@@ -43,7 +43,7 @@ describe('Trips Route', () => {
           expect(res.body.data).to.have.property('fare').equal('5000');
           expect(res.body.data).to.have.property('trip_date').equal(tomorrow);
           expect(res.body.data).to.have.property('duration').equal(30);
-          expect(res.body.data).to.have.property('status').equal('unstarted');
+          expect(res.body.data).to.have.property('status').equal('pending');
           expect(res.body).to.have.property('message').equal('Trip was created successfully');
           if (err) return done(err);
           done();
@@ -457,7 +457,7 @@ describe('Trips Route', () => {
         .end((err, res) => {
           const { error } = res.body;
           expect(res.body).to.have.property('status').equal('error');
-          expect(error.status).to.eql(['"status" must be one of [done, started, unstarted, cancelled]']);
+          expect(error.status).to.eql(['"status" must be one of [done, active, pending, cancelled]']);
           if (err) return done(err);
           done();
         });
@@ -473,7 +473,7 @@ describe('Trips Route', () => {
           const { error } = res.body;
           expect(res.body).to.have.property('status').equal('error');
           expect(error.status).to.eql(['"status" is not allowed to be empty',
-            '"status" must be one of [done, started, unstarted, cancelled]']);
+            '"status" must be one of [done, active, pending, cancelled]']);
           if (err) return done(err);
           done();
         });

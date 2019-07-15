@@ -3,3 +3,4 @@ import './auth.test';
 import './trip.test';
 import './bus.test';
 import './model.test';
+import './booking.test';

@@ -192,6 +192,26 @@ const emptyCancelTrip = {
   status: ''
 };
 
+const newBooking = {
+  trip_id: 2,
+  seat_number: 3,
+};
+
+const bookingWithUnexistingTrip = {
+  trip_id: 24,
+  seat_number: 3,
+};
+
+const bookingWithUnpendingTrip = {
+  trip_id: 1,
+  seat_number: 3,
+};
+
+const bookingWithUnavailableSeat = {
+  trip_id: 4,
+  seat_number: 3,
+};
+
 export {
   newUser,
   emptyUser,
@@ -232,5 +252,9 @@ export {
   tripId,
   cancelTrip,
   emptyCancelTrip,
-  wrongTripUpdate
+  wrongTripUpdate,
+  newBooking,
+  bookingWithUnexistingTrip,
+  bookingWithUnpendingTrip,
+  bookingWithUnavailableSeat
 };
