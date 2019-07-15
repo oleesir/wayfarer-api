@@ -42,7 +42,7 @@ const wrongUserAuth = { ...authUser, email: 'ryan@gmail.com', password: 'ryangor
 const wrongUserAuthEmail = { ...authUser, email: 'kennygray@gmail.com', password: 'ryangosl' };
 
 const adminPayload = {
-  id: 1,
+  user_id: 1,
   email: 'oleesir@gmail.com',
   first_name: 'Olisa',
   last_name: 'Emeka',
@@ -51,7 +51,7 @@ const adminPayload = {
 };
 
 const userPayload = {
-  id: 2,
+  user_id: 2,
   email: 'nneka@gmail.com',
   first_name: 'Nneka',
   last_name: 'Oguah',

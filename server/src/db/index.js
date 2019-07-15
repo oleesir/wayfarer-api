@@ -37,11 +37,14 @@ export default class Model {
    *
    * @param {array} attributes
    * @param {array} constraint
+   * @param {array} joins
    *
    * @returns {query} query
    */
-  async select(attributes, constraint) {
-    const query = `SELECT ${attributes} FROM ${this.table} WHERE ${constraint}`;
+  async select(attributes, constraint, joins = null) {
+    const query = joins
+      ? `SELECT ${attributes} FROM ${this.table} ${joins} WHERE ${constraint}`
+      : `SELECT ${attributes} FROM ${this.table} WHERE ${constraint}`;
     try {
       const result = await this.pool.query(query);
 
@@ -109,11 +112,14 @@ export default class Model {
    * @method selectAll
    *
    * @param {array} attributes
+   * @param {array} joins
    *
    * @returns {query} query
    */
-  async selectAll(attributes) {
-    const query = `SELECT ${attributes} FROM ${this.table}`;
+  async selectAll(attributes, joins = null) {
+    const query = joins
+      ? `SELECT ${attributes} FROM ${this.table} ${joins}`
+      : `SELECT ${attributes} FROM ${this.table}`;
     try {
       const result = await this.pool.query(query);
       return result.rows;

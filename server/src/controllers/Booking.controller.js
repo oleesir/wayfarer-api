@@ -17,7 +17,7 @@ export default class BookingController {
    */
   static async createBooking(req, res) {
     const {
-      id: user_id, first_name, last_name, email
+      user_id, first_name, last_name, email
     } = req.decoded;
     const {
       trip_id,
@@ -83,6 +83,33 @@ export default class BookingController {
       status: 'success',
       data,
       message: 'Booking was created successfully'
+    });
+  }
+
+  /**
+   * @method getAllBooking
+   *
+   * @param {object} req
+   * @param {object} res
+   *
+   * @return {array} return
+   */
+  static async getAllBookings(req, res) {
+    const {
+      user_id,
+      is_admin
+    } = req.decoded;
+    const selection = ['bookings.id AS booking_id', 'bookings.seat_number', 'trips.id AS trip_id', 'trips.bus_id', 'trips.origin', 'trips.destination', 'trips.trip_date', 'trips.trip_time', 'users.id AS user_id', 'users.email', 'users.first_name', 'users.last_name', 'bookings.created_on'];
+    const joins = ['LEFT JOIN trips ON bookings.trip_id = trips.id LEFT JOIN users ON bookings.user_id = users.id'];
+    const where = [`user_id=${user_id}`];
+
+    const eagerLoadedBookings = is_admin
+      ? await bookings.selectAll(selection, joins)
+      : await bookings.select(selection, where, joins);
+
+    return res.status(200).json({
+      status: 'success',
+      data: eagerLoadedBookings
     });
   }
 }

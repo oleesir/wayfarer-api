@@ -23,7 +23,7 @@ describe('Booking Route', () => {
         .expect(201)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('success');
-          expect(res.body.data).to.have.property('booking_id').equal(2);
+          expect(res.body.data).to.have.property('booking_id').equal(3);
           expect(res.body.data).to.have.property('bus_id').equal(2);
           expect(res.body.data).to.have.property('user_id').equal(2);
           expect(res.body.data).to.have.property('trip_id').equal(2);
@@ -107,6 +107,60 @@ describe('Booking Route', () => {
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal(401);
           expect(res.body).to.have.property('error').equal('You are not authorized to perform this action');
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
+
+  describe('Get booking', () => {
+    it('should get all bookings in the app for an admin', (done) => {
+      request(app)
+        .get(`${URL}/bookings`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data.length).to.equal(3);
+          expect(res.body.data[0]).to.have.property('booking_id');
+          expect(res.body.data[0]).to.have.property('bus_id');
+          expect(res.body.data[0]).to.have.property('user_id');
+          expect(res.body.data[0]).to.have.property('trip_id');
+          expect(res.body.data[0]).to.have.property('trip_date');
+          expect(res.body.data[0]).to.have.property('trip_time');
+          expect(res.body.data[0]).to.have.property('seat_number');
+          expect(res.body.data[0]).to.have.property('first_name');
+          expect(res.body.data[0]).to.have.property('last_name');
+          expect(res.body.data[0]).to.have.property('email');
+          expect(res.body.data[0]).to.have.property('origin');
+          expect(res.body.data[0]).to.have.property('destination');
+          expect(res.body.data[0]).to.have.property('created_on');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should get all bookings that belong to a user for the user', (done) => {
+      request(app)
+        .get(`${URL}/bookings`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data.length).to.equal(2);
+          expect(res.body.data[0]).to.have.property('booking_id');
+          expect(res.body.data[0]).to.have.property('bus_id');
+          expect(res.body.data[0]).to.have.property('user_id');
+          expect(res.body.data[0]).to.have.property('trip_id');
+          expect(res.body.data[0]).to.have.property('trip_date');
+          expect(res.body.data[0]).to.have.property('trip_time');
+          expect(res.body.data[0]).to.have.property('seat_number');
+          expect(res.body.data[0]).to.have.property('first_name');
+          expect(res.body.data[0]).to.have.property('last_name');
+          expect(res.body.data[0]).to.have.property('email');
+          expect(res.body.data[0]).to.have.property('origin');
+          expect(res.body.data[0]).to.have.property('destination');
+          expect(res.body.data[0]).to.have.property('created_on');
           if (err) return done(err);
           done();
         });

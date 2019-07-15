@@ -41,6 +41,6 @@ export default `
   INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
   VALUES('Lagos', 'Abuja', 5 , 9000, '09:00', '2019-09-15', 120, 'pending', 17); 
 
-  INSERT INTO bookings (trip_id, user_id, seat_number)
-  VALUES(3, 2, 10);
+  INSERT INTO bookings (trip_id, user_id, seat_number) VALUES(3, 2, 10);
+  INSERT INTO bookings (trip_id, user_id, seat_number) VALUES(5, 4, 12);
 `;
