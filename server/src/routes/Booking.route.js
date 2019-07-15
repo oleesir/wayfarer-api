@@ -7,9 +7,10 @@ import Authorization from '../middlewares/Authorization.middleware';
 
 const createBookingValidation = new Validation(createBookingSchema).validate;
 const { verifyToken, authorizeRole } = Authorization;
-const { createBooking } = BookingController;
+const { createBooking, getAllBookings } = BookingController;
 
 const router = Router();
 router.post('/', verifyToken, authorizeRole('user'), createBookingValidation, asyncErrorHandler(createBooking));
+router.get('/', verifyToken, asyncErrorHandler(getAllBookings));
 
 export default router;
