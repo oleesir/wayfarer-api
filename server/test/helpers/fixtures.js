@@ -74,9 +74,7 @@ const newTrip = {
   destination: 'Benue',
   bus_id: 3,
   fare: 5000,
-  trip_time: '23:00',
   trip_date: tomorrow,
-  duration: 30
 };
 
 const tripWithYesterdayDate = {
@@ -84,9 +82,7 @@ const tripWithYesterdayDate = {
   destination: 'Benue',
   bus_id: 3,
   fare: 5000,
-  trip_time: '23:00',
   trip_date: yesterday,
-  duration: 30
 };
 
 const tripWithTomorrowDate = {
@@ -94,9 +90,7 @@ const tripWithTomorrowDate = {
   destination: 'Benue',
   bus_id: 3,
   fare: 5000,
-  trip_time: '23:00',
   trip_date: tomorrow,
-  duration: 30
 };
 
 const tripWithTodayDate = {
@@ -104,9 +98,7 @@ const tripWithTodayDate = {
   destination: 'Benue',
   bus_id: 3,
   fare: 5000,
-  trip_time: '23:00',
   trip_date: today,
-  duration: 30
 };
 
 const tripWithUnavailableBus = {
@@ -114,9 +106,7 @@ const tripWithUnavailableBus = {
   destination: 'Benue',
   bus_id: 2,
   fare: 5000,
-  trip_time: '23:00',
   trip_date: tomorrow,
-  duration: 30
 };
 
 const tripWithUnexistingBus = {
@@ -124,9 +114,7 @@ const tripWithUnexistingBus = {
   destination: 'Benue',
   bus_id: 30,
   fare: 5000,
-  trip_time: '23:00',
   trip_date: tomorrow,
-  duration: 30
 };
 
 const tripWithUnavailableBusTwo = {
@@ -134,9 +122,7 @@ const tripWithUnavailableBusTwo = {
   destination: 'Benue',
   bus_id: 3,
   fare: 5000,
-  trip_time: '23:15',
   trip_date: tomorrow,
-  duration: 30
 };
 
 const emptyTrip = {
@@ -144,9 +130,7 @@ const emptyTrip = {
   destination: '',
   bus_id: '',
   fare: '',
-  trip_time: '',
   trip_date: '',
-  duration: ''
 };
 
 const incompleteTrip = {
@@ -212,6 +196,10 @@ const bookingWithUnavailableSeat = {
   seat_number: 3,
 };
 
+const bookingWithNoSeat = {
+  trip_id: 5,
+};
+
 export {
   newUser,
   emptyUser,
@@ -256,5 +244,6 @@ export {
   newBooking,
   bookingWithUnexistingTrip,
   bookingWithUnpendingTrip,
-  bookingWithUnavailableSeat
+  bookingWithUnavailableSeat,
+  bookingWithNoSeat,
 };

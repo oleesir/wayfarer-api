@@ -30,17 +30,17 @@ export default `
   INSERT INTO buses (number_plate, manufacturer, model, year, status, capacity)
   VALUES('JFK112TT', 'General Motors', 'Bentley' ,'2004', 'available', 17);
 
-  INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
-  VALUES('Lagos', 'Warri', 3 , 5000, '08:30', '2019-05-04', 720, 'done', 17);
-  INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
-  VALUES('Port Harcourt', 'Anambra', 2 , 3000, '07:30', '2019-08-10', 45, 'pending', 17);
-  INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
-  VALUES('Lagos', 'Benue', 1 , 4000, '07:50', '2019-08-15', 120, 'done', 16);
-  INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
-  VALUES('Lagos', 'Adamawa', 6 , 4000, '08:50', '2019-09-15', 120, 'pending', 0); 
-  INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
-  VALUES('Lagos', 'Abuja', 5 , 9000, '09:00', '2019-09-15', 120, 'pending', 17); 
+  INSERT INTO trips (origin, destination, bus_id, fare, trip_date, status, available_seats)
+  VALUES('Lagos', 'Warri', 3 , 5000, '2019-05-04', 'done', 17);
+  INSERT INTO trips (origin, destination, bus_id, fare, trip_date, status, available_seats)
+  VALUES('Port Harcourt', 'Anambra', 2 , 3000, '2019-08-10', 'pending', 17);
+  INSERT INTO trips (origin, destination, bus_id, fare, trip_date, status, available_seats)
+  VALUES('Lagos', 'Benue', 1 , 4000, '2019-08-15', 'done', 16);
+  INSERT INTO trips (origin, destination, bus_id, fare, trip_date, status, available_seats)
+  VALUES('Lagos', 'Adamawa', 6 , 4000, '2019-09-15', 'pending', 0); 
+  INSERT INTO trips (origin, destination, bus_id, fare, trip_date, status, available_seats)
+  VALUES('Lagos', 'Abuja', 5 , 9000, '2019-09-15', 'pending', 17); 
 
   INSERT INTO bookings (trip_id, user_id, seat_number) VALUES(3, 2, 10);
-  INSERT INTO bookings (trip_id, user_id, seat_number) VALUES(5, 4, 12);
+  INSERT INTO bookings (trip_id, user_id, seat_number) VALUES(5, 4, 1);
 `;

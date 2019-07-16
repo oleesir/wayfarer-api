@@ -30,7 +30,6 @@ describe('Bus Route', () => {
           expect(res.body.data).to.have.property('model').equal('equinox');
           expect(res.body.data).to.have.property('year').equal(2006);
           expect(res.body.data).to.have.property('capacity').equal(17);
-          expect(res.body).to.have.property('message').equal('Bus was created successfully');
           if (err) return done(err);
           done();
         });

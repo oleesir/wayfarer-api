@@ -38,6 +38,7 @@ export default class BusController {
       [`'${numberPlate}','${manufacturer}','${model}',${year},${capacity}`]);
 
     const data = {
+      id: newBus.id,
       bus_id: newBus.id,
       plate_number: newBus.number_plate,
       manufacturer: newBus.manufacturer,
@@ -49,7 +50,6 @@ export default class BusController {
     return res.status(201).json({
       status: 'success',
       data,
-      message: 'Bus was created successfully'
     });
   }
 }

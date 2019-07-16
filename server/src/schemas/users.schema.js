@@ -16,6 +16,7 @@ export const signinSchema = Joi.object().keys({
 
 // user_id and is_admin not provided because token already contains them
 export const authSchema = Joi.object().keys({
+  Authorization: Joi.string(),
   token: Joi.string(),
 });
 
