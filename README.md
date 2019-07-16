@@ -1,9 +1,8 @@
 [![Build Status](https://travis-ci.org/oleesir/wayfarer-api.svg?branch=develop)](https://travis-ci.org/oleesir/wayfarer-api)
 [![Maintainability](https://api.codeclimate.com/v1/badges/1a045a31f842d8f92b00/maintainability)](https://codeclimate.com/github/oleesir/wayfarer-api/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/1a045a31f842d8f92b00/test_coverage)](https://codeclimate.com/github/oleesir/wayfarer-api/test_coverage) [![codecov](https://codecov.io/gh/oleesir/wayfarer-api/branch/develop/graph/badge.svg)](https://codecov.io/gh/oleesir/wayfarer-api)
-# wayfarer-api
 
-# banka
-A banking application that helps users perform banking transactions.
+# wayfarer-api
+A transport company where users can book trips.
 
 
 # Table of Contents
@@ -22,7 +21,7 @@ A banking application that helps users perform banking transactions.
 
 ## Hosted App
 
-coming soon
+https://wayfarer-appy.herokuapp.com
 
 ## Pivotal Tracker Board
 
@@ -30,14 +29,14 @@ https://www.pivotaltracker.com/n/projects/2359645
 
 ## API Documentation
 
-coming soon
+Hosted: https://wayfarer-appy.herokuapp.com/api/v1/api-docs/
+
+Postman Documentation: https://documenter.getpostman.com/view/4968717/SVSKMUzb?version=latest#0e905547-4327-4a0c-84d8-38b94031b216
 
 ## Built With
 
 * [Node.js](https://nodejs.org/)
 * [Express](https://expressjs.com/)
-* [Html]()
-* [CSS]()
 * [Postgres](https://www.postgresql.org/)
 
 ## Supporting packages
@@ -56,7 +55,9 @@ coming soon
 ## Application Features
 * User Registration
 * User can book a trip
+* User can delete a booking
 * User can view all trips
+* User can view all his bookings
 * Admin can create a trip
 * Admin can cancel a trip
 * Admin can view all trips and bookings
@@ -81,7 +82,7 @@ Dependencies to enable them work are included in the `package.json` file. To run
 
 ```bash
 # Enter the project's directory
-$ cd banka/
+$ cd wayfarer-api/
 
 # To run the available unit tests
 $ npm run test
@@ -105,9 +106,9 @@ If you have Postman installed, you can test routes listed below. An example resp
         "first_name": String,
         "last_name": String,
         "email": String,
-        ​“user_id”​:​Integer,​ 
- ​       “is_admin”:Boolean​,
-      "token": "jbhfuhbfhrb_r.iufnr3uinrufrf"
+        ​"user_id"​:​ Integer,​ 
+ ​       "is_admin": Boolean​,
+        "token": "jbhfuhbfhrb_r.iufnr3uinrufrf"
     } 
 }
 ```
@@ -128,11 +129,11 @@ If you have Postman installed, you can test routes listed below. An example resp
 | `POST`   |              `/api/v1/auth/signup`              |       Register a new user on the app       |        User        |
 | `POST`   |              `/api/v1/auth/signin`              |           Login an existing user           | User & Admin |
 | `POST`   |               `/api/v1/trips`                |             Create a trip              |        Admin        |
-| `PATCH`  |       `/api/v1/trips/id`       |         Edit a trip status           |      Admin      |
-| `DELETE` |       `/api/v1/bookings/id`        |             Delete a booking             |      User      |
+| `PATCH`  |       `/api/v1/trips/{id}`       |         Edit a trip status           |      Admin      |
+| `DELETE` |       `/api/v1/bookings/{id}`        |             Delete a booking             |      User      |
 | `POST`   |  `/api/v1/bookings`  |              Get all bookings              |      User & Admin      |
 | `POST`   | `/api/v1/trips?origin=:origin or /api/v1/trips?destination=:destination`  |        get a list of filtered trips based on origin and destination             |      User & Admin     |
-| `GET`    |       `api/v1/trips/id`        |      View aspecific trip details      | User & Admin |
+| `GET`    |       `api/v1/trips/{id}`        |      View aspecific trip details      | User & Admin |
 | `GET`    |                `api/v1/trips`                |      View a list of all trips      |     User & Admin      |
 | `POST`    |                `api/v1/buses`                |      Create a bus      |      Admin      |
 
