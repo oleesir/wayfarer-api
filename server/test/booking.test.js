@@ -103,9 +103,9 @@ describe('Booking Route', () => {
         .post(`${URL}/bookings`)
         .send(bookingWithUnavailableSeat)
         .set('Authorization', `Bearer ${adminToken}`)
-        .expect(401)
+        .expect(403)
         .end((err, res) => {
-          expect(res.body).to.have.property('status').equal(401);
+          expect(res.body).to.have.property('status').equal('error');
           expect(res.body).to.have.property('error').equal('You are not authorized to perform this action');
           if (err) return done(err);
           done();
@@ -161,6 +161,73 @@ describe('Booking Route', () => {
           expect(res.body.data[0]).to.have.property('origin');
           expect(res.body.data[0]).to.have.property('destination');
           expect(res.body.data[0]).to.have.property('created_on');
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
+
+  describe('Delete booking', () => {
+    it('should delete a booking for a user', (done) => {
+      request(app)
+        .delete(`${URL}/bookings/3`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body).to.have.property('message').equal('Booking deleted successfully');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not delete a booking that does not exist', (done) => {
+      request(app)
+        .delete(`${URL}/bookings/3`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(404)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body).to.have.property('error').equal('This booking does not exist');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not delete a booking that is either done or active (in_progress)', (done) => {
+      request(app)
+        .delete(`${URL}/bookings/1`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body).to.have.property('error').equal('This booking cannot be deleted because it is either done or in progress (active)');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not delete a booking that does not belong to the user', (done) => {
+      request(app)
+        .delete(`${URL}/bookings/2`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(404)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body).to.have.property('error').equal('This booking does not exist');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not allow an admin delete a booking', (done) => {
+      request(app)
+        .delete(`${URL}/bookings/3`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .expect(403)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body).to.have.property('error').equal('You are not authorized to perform this action');
           if (err) return done(err);
           done();
         });

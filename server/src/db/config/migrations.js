@@ -12,7 +12,7 @@ export const dropTypes = `
 
 /*
   trip is pending by default,
-  active when the trip starts,
+  active when the trip starts i.e. is in progress,
   done when the trip is done,
   and cancelled when the trip is cancelled
 */

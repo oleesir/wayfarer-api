@@ -219,8 +219,9 @@ describe('Trips Route', () => {
         .post(`${URL}/trips`)
         .send(newTrip)
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(401)
+        .expect(403)
         .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
           expect(res.body).to.have.property('error').equal('You are not authorized to perform this action');
           if (err) return done(err);
           done();

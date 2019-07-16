@@ -70,10 +70,10 @@ describe('Bus Route', () => {
         .post(`${URL}/buses`)
         .send(newBus)
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(401)
+        .expect(403)
         .end((err, res) => {
           const { error } = res.body;
-          expect(res.body).to.have.property('status').equal(401);
+          expect(res.body).to.have.property('status').equal('error');
           expect(error).to.eql('You are not authorized to perform this action');
           if (err) return done(err);
           done();
@@ -88,7 +88,7 @@ describe('Bus Route', () => {
         .expect(401)
         .end((err, res) => {
           const { error } = res.body;
-          expect(res.body).to.have.property('status').equal(401);
+          expect(res.body).to.have.property('status').equal('error');
           expect(error).to.eql('Invalid token');
           if (err) return done(err);
           done();
@@ -102,7 +102,7 @@ describe('Bus Route', () => {
         .expect(401)
         .end((err, res) => {
           const { error } = res.body;
-          expect(res.body).to.have.property('status').equal(401);
+          expect(res.body).to.have.property('status').equal('error');
           expect(error).to.eql('Please provide a token');
           if (err) return done(err);
           done();
