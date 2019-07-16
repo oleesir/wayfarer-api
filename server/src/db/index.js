@@ -45,6 +45,8 @@ export default class Model {
     const query = joins
       ? `SELECT ${attributes} FROM ${this.table} ${joins} WHERE ${constraint}`
       : `SELECT ${attributes} FROM ${this.table} WHERE ${constraint}`;
+
+    console.log(query);
     try {
       const result = await this.pool.query(query);
 

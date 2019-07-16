@@ -1,6 +1,8 @@
 import Model from '../db/index';
+import getRandomSeat from '../utils/getRandomSeat';
 
 const bookings = new Model('bookings');
+const buses = new Model('buses');
 const trips = new Model('trips');
 
 /**
@@ -24,24 +26,12 @@ export default class BookingController {
       seat_number
     } = req.body;
 
-    const [tripToBook] = await trips.select(['*'], [`id=${trip_id}`]);
-
-    const existingBookings = await bookings.select(['*'], [`trip_id=${trip_id}`]);
-
-    const isSeatUnavailable = existingBookings
-      .find(booking => booking.seat_number === Number(seat_number));
+    const [tripToBook] = await trips.select(['*'], [`trips.id=${trip_id}`]);
 
     if (!tripToBook) {
       return res.status(404).json({
         status: 'error',
         error: 'Trip does not exist'
-      });
-    }
-
-    if (isSeatUnavailable) {
-      return res.status(409).json({
-        status: 'error',
-        error: 'This seat is unavailable, please choose another seat'
       });
     }
 
@@ -59,17 +49,35 @@ export default class BookingController {
       });
     }
 
-    const [newBooking] = await bookings.create(['trip_id', 'user_id', 'seat_number'], [`${trip_id}, ${user_id}, ${seat_number}`]);
+    const [bus] = await buses.select(['capacity'], [`id=${tripToBook.bus_id}`]);
+    const existingBookings = await bookings.select(['*'], [`trip_id=${trip_id}`]);
+
+    const unavailableSeats = existingBookings.map(booking => booking.seat_number);
+
+    const isSeatUnavailable = seat_number
+      ? unavailableSeats.indexOf(Number(seat_number)) > -1
+      : false;
+
+    if (isSeatUnavailable) {
+      return res.status(409).json({
+        status: 'error',
+        error: 'This seat is unavailable, please choose another seat'
+      });
+    }
+
+    const seat = seat_number || getRandomSeat(bus.capacity, unavailableSeats);
+
+    const [newBooking] = await bookings.create(['trip_id', 'user_id', 'seat_number'], [`${trip_id}, ${user_id}, ${seat}`]);
 
     await trips.update([`available_seats=${tripToBook.available_seats - 1}`], [`id=${trip_id}`]);
 
     const data = {
+      id: newBooking.id,
       booking_id: newBooking.id,
       user_id,
       trip_id: tripToBook.id,
       bus_id: tripToBook.bus_id,
       trip_date: tripToBook.trip_date,
-      trip_time: tripToBook.trip_time,
       seat_number: newBooking.seat_number,
       first_name,
       last_name,
@@ -99,7 +107,7 @@ export default class BookingController {
       user_id,
       is_admin
     } = req.decoded;
-    const selection = ['bookings.id AS booking_id', 'bookings.seat_number', 'trips.id AS trip_id', 'trips.bus_id', 'trips.origin', 'trips.destination', 'trips.status AS trip_status', 'trips.trip_date', 'trips.trip_time', 'users.id AS user_id', 'users.email', 'users.first_name', 'users.last_name', 'bookings.created_on'];
+    const selection = ['bookings.id AS id', 'bookings.id AS booking_id', 'bookings.seat_number', 'trips.id AS trip_id', 'trips.bus_id', 'trips.origin', 'trips.destination', 'trips.status AS trip_status', 'trips.trip_date', 'users.id AS user_id', 'users.email', 'users.first_name', 'users.last_name', 'bookings.created_on'];
     const joins = ['LEFT JOIN trips ON bookings.trip_id = trips.id LEFT JOIN users ON bookings.user_id = users.id'];
     const where = [`user_id=${user_id}`];
 
@@ -145,7 +153,9 @@ export default class BookingController {
 
     return res.status(200).json({
       status: 'success',
-      message: 'Booking deleted successfully'
+      data: {
+        message: 'Booking deleted successfully'
+      }
     });
   }
 }

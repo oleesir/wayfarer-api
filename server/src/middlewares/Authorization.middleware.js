@@ -16,7 +16,7 @@ export default class Authorization {
    * @returns {object} status and message
    */
   static verifyToken(req, res, next) {
-    const bearerToken = req.headers['x-access-token'] || req.headers.authorization || req.body.token;
+    const bearerToken = req.headers['x-access-token'] || req.headers.authorization || req.body.token || req.body.authorization || req.body.Authorization;
     const token = bearerToken && bearerToken.replace('Bearer ', '');
 
     if (!token) {
