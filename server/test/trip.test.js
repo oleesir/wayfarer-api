@@ -62,12 +62,12 @@ describe('Trips Route', () => {
           expect(res.body).to.have.property('status').equal('error');
           expect(error.origin).to.eql([
             '"origin" is not allowed to be empty',
-            '"origin" with value "" fails to match the required pattern: /^[a-zA-Z]+$/',
+            '"origin" with value "" fails to match the required pattern: /^[a-zA-Z\\s]+$/',
             '"origin" length must be at least 2 characters long'
           ]);
           expect(error.destination).to.eql([
             '"destination" is not allowed to be empty',
-            '"destination" with value "" fails to match the required pattern: /^[a-zA-Z]+$/',
+            '"destination" with value "" fails to match the required pattern: /^[a-zA-Z\\s]+$/',
             '"destination" length must be at least 2 characters long'
           ]);
           expect(error.bus_id).to.eql(['"bus_id" must be a number']);
@@ -338,11 +338,11 @@ describe('Trips Route', () => {
         .expect(200)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data.length).to.equal(6);
           if (err) return done(err);
           done();
         });
     });
-
 
     it('should allow a user get all trips', (done) => {
       request(app)
@@ -351,11 +351,11 @@ describe('Trips Route', () => {
         .expect(200)
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data.length).to.equal(6);
           if (err) return done(err);
           done();
         });
     });
-
 
     it('should allow a user get a trip', (done) => {
       request(app)
@@ -427,6 +427,71 @@ describe('Trips Route', () => {
           const { error } = res.body;
           expect(res.body).to.have.property('status').equal('error');
           expect(error.id).to.eql(['"id" must be a number']);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should allow a user get filtered trips by origin', (done) => {
+      request(app)
+        .get(`${URL}/trips?origin=Lagos`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data.length).to.equal(4);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should allow a user get filtered trips by destination', (done) => {
+      request(app)
+        .get(`${URL}/trips?destination=Adamawa`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data.length).to.equal(1);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should allow a user get filtered trips by destination and origin', (done) => {
+      request(app)
+        .get(`${URL}/trips?destination=Anambra&origin=Port Harcourt`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('success');
+          expect(res.body.data.length).to.equal(1);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not allow a user filter by unexisting query param', (done) => {
+      request(app)
+        .get(`${URL}/trips?status=cancelled`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body.error).to.have.property('status').eql(['"status" is not allowed']);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should not allow a user filter by invalid query value', (done) => {
+      request(app)
+        .get(`${URL}/trips?origin=^%*(`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.body).to.have.property('status').equal('error');
+          expect(res.body.error).to.have.property('origin').eql(['"origin" with value "%5E%*(" fails to match the required pattern: /^[a-zA-Z\\s]+$/']);
           if (err) return done(err);
           done();
         });

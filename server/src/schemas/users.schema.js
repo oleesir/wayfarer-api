@@ -5,12 +5,12 @@ export const signupSchema = Joi.object().keys({
     .required(),
   last_name: Joi.string().regex(/^[a-zA-Z]+$/).min(2).max(30)
     .required(),
-  email: Joi.string().email({ minDomainSegments: 2 }).required(),
+  email: Joi.string().email({ minDomainSegments: 2 }).lowercase().required(),
   password: Joi.string().min(8).required()
 });
 
 export const signinSchema = Joi.object().keys({
-  email: Joi.string().email({ minDomainSegments: 2 }).required(),
+  email: Joi.string().email({ minDomainSegments: 2 }).lowercase().required(),
   password: Joi.string().min(8).required()
 });
 
