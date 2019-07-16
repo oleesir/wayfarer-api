@@ -33,7 +33,7 @@ export default `
   INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
   VALUES('Lagos', 'Warri', 3 , 5000, '08:30', '2019-05-04', 720, 'done', 17);
   INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
-  VALUES('Lagos', 'Anambra', 2 , 3000, '07:30', '2019-08-10', 45, 'pending', 17);
+  VALUES('Port Harcourt', 'Anambra', 2 , 3000, '07:30', '2019-08-10', 45, 'pending', 17);
   INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)
   VALUES('Lagos', 'Benue', 1 , 4000, '07:50', '2019-08-15', 120, 'done', 16);
   INSERT INTO trips (origin, destination, bus_id, fare, trip_time, trip_date, duration, status, available_seats)

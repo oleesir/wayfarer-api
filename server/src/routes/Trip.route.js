@@ -6,12 +6,14 @@ import Authorization from '../middlewares/Authorization.middleware';
 import {
   createTripSchema,
   getSingleTripSchema,
-  cancelTripSchema
+  cancelTripSchema,
+  getAllTripsSchema
 } from '../schemas/trips.schema';
 
 const createTripValidation = new Validation(createTripSchema).validate;
 const getSingleTripValidation = new Validation(getSingleTripSchema).validate;
 const cancelTripValidation = new Validation(cancelTripSchema).validate;
+const getAllTripsValidation = new Validation(getAllTripsSchema).validate;
 
 const {
   verifyToken,
@@ -31,7 +33,7 @@ router.post('/', verifyToken,
   createTripValidation,
   asyncErrorHandler(createTrip));
 
-router.get('/', verifyToken, asyncErrorHandler(getAllTrips));
+router.get('/', verifyToken, getAllTripsValidation, asyncErrorHandler(getAllTrips));
 
 router.get('/:id', verifyToken,
   getSingleTripValidation,

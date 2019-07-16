@@ -33,7 +33,7 @@ describe('Booking Route', () => {
           expect(res.body.data).to.have.property('first_name').equal('Nneka');
           expect(res.body.data).to.have.property('last_name').equal('Oguah');
           expect(res.body.data).to.have.property('email').equal('nneka@gmail.com');
-          expect(res.body.data).to.have.property('origin').equal('Lagos');
+          expect(res.body.data).to.have.property('origin').equal('Port Harcourt');
           expect(res.body.data).to.have.property('destination').equal('Anambra');
           expect(res.body.data).to.have.property('created_on');
           expect(res.body).to.have.property('message').equal('Booking was created successfully');

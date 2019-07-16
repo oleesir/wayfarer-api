@@ -100,7 +100,27 @@ export default class TripController {
    * @returns {object} status code and message
    */
   static async getAllTrips(req, res) {
-    const allTrips = await trips.selectAll(['*']);
+    let where;
+    let allTrips;
+    const { destination, origin } = req.query;
+
+    if (destination && !origin) {
+      where = `LOWER(destination) = '${destination.toLowerCase()}'`;
+    }
+
+    if (origin && !destination) {
+      where = `LOWER(origin) = '${origin.toLowerCase()}'`;
+    }
+
+    if (origin && destination) {
+      where = `LOWER(destination) = '${destination.toLowerCase()}' AND LOWER(origin) = '${origin.toLowerCase()}'`;
+    }
+
+    if (where) {
+      allTrips = await trips.select(['*'], [where]);
+    } else {
+      allTrips = await trips.selectAll(['*']);
+    }
 
     const data = allTrips.map(trip => ({
       trip_id: trip.id,

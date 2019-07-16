@@ -6,9 +6,9 @@ const now = moment().format('YYYY-MM-DD');
 
 
 export const createTripSchema = Joi.object().keys({
-  origin: Joi.string().required().regex(/^[a-zA-Z]+$/).min(2)
+  origin: Joi.string().required().regex(/^[a-zA-Z\s]+$/).min(2)
     .max(30),
-  destination: Joi.string().required().regex(/^[a-zA-Z]+$/).min(2)
+  destination: Joi.string().required().regex(/^[a-zA-Z\s]+$/).min(2)
     .max(30),
   bus_id: Joi.number().min(1).max(300).required(),
   fare: Joi.number().required(),
@@ -73,6 +73,13 @@ export const getSingleTripSchema = Joi.object().keys({
 export const cancelTripSchema = Joi.object().keys({
   id: Joi.number().integer().min(1),
   status: Joi.string().valid(['done', 'active', 'pending', 'cancelled']).required()
+}).concat(authSchema);
+
+export const getAllTripsSchema = Joi.object().keys({
+  origin: Joi.string().regex(/^[a-zA-Z\s]+$/).min(2)
+    .max(30),
+  destination: Joi.string().regex(/^[a-zA-Z\s]+$/).min(2)
+    .max(30),
 }).concat(authSchema);
 
 export default{
