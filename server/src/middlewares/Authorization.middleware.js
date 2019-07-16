@@ -21,7 +21,7 @@ export default class Authorization {
 
     if (!token) {
       return res.status(401).json({
-        status: 401,
+        status: 'error',
         error: 'Please provide a token'
       });
     }
@@ -29,9 +29,9 @@ export default class Authorization {
     return jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
       if (err) {
         if (err.name === 'TokenExpiredError') {
-          return res.status(401).json({ status: 401, error: 'User authorization token is expired' });
+          return res.status(401).json({ status: 'error', error: 'User authorization token is expired' });
         }
-        return res.status(401).json({ status: 401, error: 'Invalid token' });
+        return res.status(401).json({ status: 'error', error: 'Invalid token' });
       }
       req.decoded = decoded;
       return next();
@@ -60,8 +60,8 @@ export default class Authorization {
     return (req, res, next) => {
       const { is_admin: isAdmin } = req.decoded;
       if ((role === 'admin' && !isAdmin) || (role !== 'admin' && isAdmin)) {
-        return res.status(401).json({
-          status: 401,
+        return res.status(403).json({
+          status: 'error',
           error: 'You are not authorized to perform this action'
         });
       }

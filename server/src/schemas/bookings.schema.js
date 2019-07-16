@@ -7,6 +7,12 @@ export const createBookingSchema = Joi.object().keys({
     .required()
 }).concat(authSchema);
 
+export const deleteBookingSchema = Joi.object().keys({
+  id: Joi.number().integer().min(1)
+}).concat(authSchema);
+
+
 export default {
-  createBookingSchema
+  createBookingSchema,
+  deleteBookingSchema
 };

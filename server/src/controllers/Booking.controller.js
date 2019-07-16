@@ -99,7 +99,7 @@ export default class BookingController {
       user_id,
       is_admin
     } = req.decoded;
-    const selection = ['bookings.id AS booking_id', 'bookings.seat_number', 'trips.id AS trip_id', 'trips.bus_id', 'trips.origin', 'trips.destination', 'trips.trip_date', 'trips.trip_time', 'users.id AS user_id', 'users.email', 'users.first_name', 'users.last_name', 'bookings.created_on'];
+    const selection = ['bookings.id AS booking_id', 'bookings.seat_number', 'trips.id AS trip_id', 'trips.bus_id', 'trips.origin', 'trips.destination', 'trips.status AS trip_status', 'trips.trip_date', 'trips.trip_time', 'users.id AS user_id', 'users.email', 'users.first_name', 'users.last_name', 'bookings.created_on'];
     const joins = ['LEFT JOIN trips ON bookings.trip_id = trips.id LEFT JOIN users ON bookings.user_id = users.id'];
     const where = [`user_id=${user_id}`];
 
@@ -110,6 +110,42 @@ export default class BookingController {
     return res.status(200).json({
       status: 'success',
       data: eagerLoadedBookings
+    });
+  }
+
+  /**
+   * @method deleteBooking
+   *
+   * @param {object} req
+   * @param {object} res
+   *
+   * @returns {object} status and message
+   */
+  static async deleteBooking(req, res) {
+    const { user_id } = req.decoded;
+    const { id } = req.params;
+
+    const [bookingToDelete] = await bookings.select(['trips.status AS trip_status'], [`bookings.id=${id} AND bookings.user_id=${user_id}`], ['LEFT JOIN trips ON trips.id = bookings.trip_id']);
+
+    if (!bookingToDelete) {
+      return res.status(404).json({
+        status: 'error',
+        error: 'This booking does not exist'
+      });
+    }
+
+    if (['done', 'active'].includes(bookingToDelete.trip_status)) {
+      return res.status(400).json({
+        status: 'error',
+        error: 'This booking cannot be deleted because it is either done or in progress (active)'
+      });
+    }
+
+    await bookings.delete([`id=${id}`]);
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Booking deleted successfully'
     });
   }
 }
