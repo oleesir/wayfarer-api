@@ -34,7 +34,6 @@ describe('Auth Routes', () => {
         .end((err, res) => {
           expect(res.body).to.have.property('status').equal('success');
           expect(res.body).to.have.property('data');
-          expect(res.body).to.have.property('message');
           if (err) return done(err);
           done();
         });
@@ -190,7 +189,6 @@ describe('Auth Routes', () => {
         .end((err, res) => {
           expect(res.status).to.equal(200);
           expect(res.body).to.have.property('status').equal('success');
-          expect(res.body).to.have.property('message').equal('Login successful');
           if (err) return done(err);
           done();
         });

@@ -58,8 +58,7 @@ export default class AuthController {
     };
     return res.status(201).json({
       status: 'success',
-      data,
-      message: 'User registered successfully'
+      data
     });
   }
 
@@ -114,8 +113,7 @@ export default class AuthController {
 
       return res.status(200).json({
         status: 'success',
-        data,
-        message: 'Login successful'
+        data
       });
     }
     return res.status(401).json({
