@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "10.5.0"
+  },
   "scripts": {
     "build": "babel server/src -d server/dist",
-    "start": "node ./server/src/app.js",
+    "start": "node ./server/dist/app.js",
     "dev": "nodemon ./server/src/app.js --exec babel-node",
-    "setup:db": "babel-node ./server/src/db/setup.js",
-    "test": "NODE_ENV=test npm run setup:db && NODE_ENV=test mocha --require @babel/register server/test/tests.test.js --exit",
+    "setup:db": "node ./server/dist/db/setup.js",
+    "setup:db:dev": "babel-node ./server/src/db/setup.js",
+    "test": "NODE_ENV=test npm run setup:db:dev && NODE_ENV=test mocha --require @babel/register server/test/tests.test.js --exit",
     "lint": "eslint \"**/*.js\" --fix",
     "test:coverage": "nyc --reporter=text --reporter=json --reporter=lcov npm run test",
     "codecov": "codecov"
